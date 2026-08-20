@@ -1,0 +1,1190 @@
+{
+  "name": "Employee Onboarding & Master Entry",
+  "fields": [
+    {
+      "name": "employee_id",
+      "label": "Employee ID",
+      "type": "number",
+      "hidden": false,
+      "readOnly": true,
+      "disabled": false,
+      "placeholder": "Auto-generated",
+      "defaultValue": "",
+      "validation": {
+        "required": true,
+        "minLength": null,
+        "maxLength": null,
+        "min": 1000,
+        "max": 999999,
+        "pattern": ""
+      },
+      "options": []
+    },
+    {
+      "name": "employee_code",
+      "label": "Employee Code",
+      "type": "text",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Enter employee code",
+      "defaultValue": "",
+      "validation": {
+        "required": true,
+        "minLength": 4,
+        "maxLength": 15,
+        "min": null,
+        "max": null,
+        "pattern": "ALPHANUMERIC"
+      },
+      "options": []
+    },
+    {
+      "name": "first_name",
+      "label": "First Name",
+      "type": "text",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Enter first name",
+      "defaultValue": "",
+      "validation": {
+        "required": true,
+        "minLength": 2,
+        "maxLength": 40,
+        "min": null,
+        "max": null,
+        "pattern": "TEXT_ONLY"
+      },
+      "options": []
+    },
+    {
+      "name": "middle_name",
+      "label": "Middle Name",
+      "type": "text",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Enter middle name",
+      "defaultValue": "",
+      "validation": {
+        "required": false,
+        "minLength": 2,
+        "maxLength": 40,
+        "min": null,
+        "max": null,
+        "pattern": "TEXT_ONLY"
+      },
+      "options": []
+    },
+    {
+      "name": "last_name",
+      "label": "Last Name",
+      "type": "text",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Enter last name",
+      "defaultValue": "",
+      "validation": {
+        "required": true,
+        "minLength": 2,
+        "maxLength": 40,
+        "min": null,
+        "max": null,
+        "pattern": "TEXT_ONLY"
+      },
+      "options": []
+    },
+    {
+      "name": "display_name",
+      "label": "Display Name",
+      "type": "text",
+      "hidden": false,
+      "readOnly": true,
+      "disabled": false,
+      "placeholder": "Generated from employee name",
+      "defaultValue": "",
+      "validation": {
+        "required": false,
+        "minLength": null,
+        "maxLength": 100,
+        "min": null,
+        "max": null,
+        "pattern": "ALPHANUMERIC_SPECIAL"
+      },
+      "options": []
+    },
+    {
+      "name": "gender",
+      "label": "Gender",
+      "type": "radio",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "",
+      "defaultValue": "MALE",
+      "validation": {
+        "required": true,
+        "minLength": null,
+        "maxLength": null,
+        "min": null,
+        "max": null,
+        "pattern": ""
+      },
+      "options": [
+        {
+          "label": "Male",
+          "value": "MALE"
+        },
+        {
+          "label": "Female",
+          "value": "FEMALE"
+        },
+        {
+          "label": "Other",
+          "value": "OTHER"
+        },
+        {
+          "label": "Prefer Not to Say",
+          "value": "NOT_SPECIFIED"
+        }
+      ]
+    },
+    {
+      "name": "date_of_birth",
+      "label": "Date of Birth",
+      "type": "date",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "",
+      "defaultValue": "",
+      "dateFormat": "dd/MM/yyyy",
+      "validation": {
+        "required": true,
+        "minLength": null,
+        "maxLength": null,
+        "min": null,
+        "max": null,
+        "pattern": ""
+      },
+      "options": []
+    },
+    {
+      "name": "email",
+      "label": "Official Email",
+      "type": "email",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "employee@company.com",
+      "defaultValue": "",
+      "validation": {
+        "required": true,
+        "minLength": null,
+        "maxLength": 120,
+        "min": null,
+        "max": null,
+        "pattern": ""
+      },
+      "options": []
+    },
+    {
+      "name": "personal_email",
+      "label": "Personal Email",
+      "type": "email",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Enter personal email",
+      "defaultValue": "",
+      "validation": {
+        "required": false,
+        "minLength": null,
+        "maxLength": 120,
+        "min": null,
+        "max": null,
+        "pattern": ""
+      },
+      "options": []
+    },
+    {
+      "name": "phone_number",
+      "label": "Phone Number",
+      "type": "text",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Enter 10 digit phone number",
+      "defaultValue": "",
+      "validation": {
+        "required": true,
+        "minLength": 10,
+        "maxLength": 10,
+        "min": null,
+        "max": null,
+        "pattern": "NUMBER_ONLY"
+      },
+      "options": []
+    },
+    {
+      "name": "employee_type",
+      "label": "Employee Type",
+      "type": "select",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "",
+      "defaultValue": "FULL_TIME",
+      "validation": {
+        "required": true,
+        "minLength": null,
+        "maxLength": null,
+        "min": null,
+        "max": null,
+        "pattern": ""
+      },
+      "options": [
+        {
+          "label": "Full Time",
+          "value": "FULL_TIME"
+        },
+        {
+          "label": "Part Time",
+          "value": "PART_TIME"
+        },
+        {
+          "label": "Contract",
+          "value": "CONTRACT"
+        },
+        {
+          "label": "Intern",
+          "value": "INTERN"
+        },
+        {
+          "label": "Consultant",
+          "value": "CONSULTANT"
+        }
+      ]
+    },
+    {
+      "name": "department",
+      "label": "Department",
+      "type": "select",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "",
+      "defaultValue": "TECHNOLOGY",
+      "validation": {
+        "required": true,
+        "minLength": null,
+        "maxLength": null,
+        "min": null,
+        "max": null,
+        "pattern": ""
+      },
+      "options": [
+        {
+          "label": "Human Resources",
+          "value": "HR"
+        },
+        {
+          "label": "Finance",
+          "value": "FINANCE"
+        },
+        {
+          "label": "Technology",
+          "value": "TECHNOLOGY"
+        },
+        {
+          "label": "Operations",
+          "value": "OPERATIONS"
+        },
+        {
+          "label": "Sales",
+          "value": "SALES"
+        },
+        {
+          "label": "Marketing",
+          "value": "MARKETING"
+        },
+        {
+          "label": "Legal",
+          "value": "LEGAL"
+        }
+      ]
+    },
+    {
+      "name": "designation",
+      "label": "Designation",
+      "type": "text",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Enter designation",
+      "defaultValue": "",
+      "validation": {
+        "required": true,
+        "minLength": 2,
+        "maxLength": 80,
+        "min": null,
+        "max": null,
+        "pattern": "ALPHANUMERIC_SPECIAL"
+      },
+      "options": []
+    },
+    {
+      "name": "joining_date",
+      "label": "Joining Date",
+      "type": "date",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "",
+      "defaultValue": "",
+      "dateFormat": "dd/MM/yyyy",
+      "validation": {
+        "required": true,
+        "minLength": null,
+        "maxLength": null,
+        "min": null,
+        "max": null,
+        "pattern": ""
+      },
+      "options": []
+    },
+    {
+      "name": "salary",
+      "label": "Annual Salary",
+      "type": "number",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Enter annual salary",
+      "defaultValue": null,
+      "validation": {
+        "required": true,
+        "minLength": null,
+        "maxLength": null,
+        "min": 10000,
+        "max": 100000000,
+        "pattern": ""
+      },
+      "options": []
+    },
+    {
+      "name": "employment_status",
+      "label": "Employment Status",
+      "type": "select",
+      "hidden": false,
+      "readOnly": true,
+      "disabled": false,
+      "placeholder": "",
+      "defaultValue": "ACTIVE",
+      "validation": {
+        "required": true,
+        "minLength": null,
+        "maxLength": null,
+        "min": null,
+        "max": null,
+        "pattern": ""
+      },
+      "options": [
+        {
+          "label": "Active",
+          "value": "ACTIVE"
+        },
+        {
+          "label": "On Probation",
+          "value": "PROBATION"
+        },
+        {
+          "label": "On Notice",
+          "value": "NOTICE"
+        },
+        {
+          "label": "Inactive",
+          "value": "INACTIVE"
+        }
+      ]
+    },
+    {
+      "name": "work_location",
+      "label": "Work Location",
+      "type": "select",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "",
+      "defaultValue": "MUMBAI",
+      "validation": {
+        "required": true,
+        "minLength": null,
+        "maxLength": null,
+        "min": null,
+        "max": null,
+        "pattern": ""
+      },
+      "options": [
+        {
+          "label": "Mumbai",
+          "value": "MUMBAI"
+        },
+        {
+          "label": "Pune",
+          "value": "PUNE"
+        },
+        {
+          "label": "Bengaluru",
+          "value": "BENGALURU"
+        },
+        {
+          "label": "Delhi",
+          "value": "DELHI"
+        },
+        {
+          "label": "Hyderabad",
+          "value": "HYDERABAD"
+        },
+        {
+          "label": "Remote",
+          "value": "REMOTE"
+        }
+      ]
+    },
+    {
+      "name": "is_remote_employee",
+      "label": "Remote Employee",
+      "type": "checkbox",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "",
+      "defaultValue": false,
+      "validation": {
+        "required": false,
+        "minLength": null,
+        "maxLength": null,
+        "min": null,
+        "max": null,
+        "pattern": ""
+      },
+      "options": []
+    },
+    {
+      "name": "has_previous_experience",
+      "label": "Has Previous Experience",
+      "type": "checkbox",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "",
+      "defaultValue": true,
+      "validation": {
+        "required": true,
+        "minLength": null,
+        "maxLength": null,
+        "min": null,
+        "max": null,
+        "pattern": ""
+      },
+      "options": []
+    },
+    {
+      "name": "previous_experience_years",
+      "label": "Previous Experience (Years)",
+      "type": "number",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Enter years of experience",
+      "defaultValue": 0,
+      "validation": {
+        "required": false,
+        "minLength": null,
+        "maxLength": null,
+        "min": 0,
+        "max": 50,
+        "pattern": ""
+      },
+      "options": []
+    },
+    {
+      "name": "address",
+      "label": "Residential Address",
+      "type": "textarea",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Enter complete residential address",
+      "defaultValue": "",
+      "validation": {
+        "required": true,
+        "minLength": 10,
+        "maxLength": 500,
+        "min": null,
+        "max": null,
+        "pattern": "ALPHANUMERIC_SPECIAL"
+      },
+      "options": []
+    },
+    {
+      "name": "city",
+      "label": "City",
+      "type": "text",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Enter city",
+      "defaultValue": "",
+      "validation": {
+        "required": true,
+        "minLength": 2,
+        "maxLength": 50,
+        "min": null,
+        "max": null,
+        "pattern": "TEXT_ONLY"
+      },
+      "options": []
+    },
+    {
+      "name": "postal_code",
+      "label": "Postal Code",
+      "type": "text",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Enter postal code",
+      "defaultValue": "",
+      "validation": {
+        "required": true,
+        "minLength": 6,
+        "maxLength": 6,
+        "min": null,
+        "max": null,
+        "pattern": "NUMBER_ONLY"
+      },
+      "options": []
+    },
+    {
+      "name": "emergency_contact_name",
+      "label": "Emergency Contact Name",
+      "type": "text",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Enter emergency contact name",
+      "defaultValue": "",
+      "validation": {
+        "required": true,
+        "minLength": 2,
+        "maxLength": 80,
+        "min": null,
+        "max": null,
+        "pattern": "ALPHANUMERIC_SPECIAL"
+      },
+      "options": []
+    },
+    {
+      "name": "emergency_contact_phone",
+      "label": "Emergency Contact Phone",
+      "type": "text",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Enter emergency contact phone",
+      "defaultValue": "",
+      "validation": {
+        "required": true,
+        "minLength": 10,
+        "maxLength": 10,
+        "min": null,
+        "max": null,
+        "pattern": "NUMBER_ONLY"
+      },
+      "options": []
+    },
+    {
+      "name": "system_username",
+      "label": "System Username",
+      "type": "text",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Enter username",
+      "defaultValue": "",
+      "validation": {
+        "required": true,
+        "minLength": 5,
+        "maxLength": 30,
+        "min": null,
+        "max": null,
+        "pattern": "ALPHANUMERIC"
+      },
+      "options": []
+    },
+    {
+      "name": "temporary_password",
+      "label": "Temporary Password",
+      "type": "password",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Enter temporary password",
+      "defaultValue": "",
+      "validation": {
+        "required": true,
+        "minLength": 8,
+        "maxLength": 30,
+        "min": null,
+        "max": null,
+        "pattern": "ALPHANUMERIC_SPECIAL"
+      },
+      "options": []
+    },
+    {
+      "name": "employee_notes",
+      "label": "Employee Notes",
+      "type": "textarea",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Enter additional notes",
+      "defaultValue": "",
+      "validation": {
+        "required": false,
+        "minLength": 0,
+        "maxLength": 1000,
+        "min": null,
+        "max": null,
+        "pattern": "ALL"
+      },
+      "options": []
+    },
+    {
+      "name": "internal_reference",
+      "label": "Internal Reference",
+      "type": "text",
+      "hidden": true,
+      "readOnly": true,
+      "disabled": false,
+      "placeholder": "System generated",
+      "defaultValue": "EMP-AUTO",
+      "validation": {
+        "required": false,
+        "minLength": null,
+        "maxLength": 50,
+        "min": null,
+        "max": null,
+        "pattern": "ALPHANUMERIC_SPECIAL"
+      },
+      "options": []
+    },
+    {
+      "name": "document_verified",
+      "label": "Documents Verified",
+      "type": "checkbox",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "",
+      "defaultValue": false,
+      "validation": {
+        "required": true,
+        "minLength": null,
+        "maxLength": null,
+        "min": null,
+        "max": null,
+        "pattern": ""
+      },
+      "options": []
+    },
+    {
+      "name": "profile_document",
+      "label": "Profile Document",
+      "type": "file",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Upload profile document",
+      "defaultValue": null,
+      "validation": {
+        "required": true,
+        "minLength": null,
+        "maxLength": null,
+        "min": null,
+        "max": null,
+        "pattern": ""
+      },
+      "options": []
+    },
+    {
+      "name": "employee_skills",
+      "label": "Primary Skill",
+      "type": "select",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "",
+      "defaultValue": "ANGULAR",
+      "validation": {
+        "required": true,
+        "minLength": null,
+        "maxLength": null,
+        "min": null,
+        "max": null,
+        "pattern": ""
+      },
+      "options": [
+        {
+          "label": "Angular",
+          "value": "ANGULAR"
+        },
+        {
+          "label": "React",
+          "value": "REACT"
+        },
+        {
+          "label": "Java",
+          "value": "JAVA"
+        },
+        {
+          "label": "Python",
+          "value": "PYTHON"
+        },
+        {
+          "label": "Node.js",
+          "value": "NODE"
+        },
+        {
+          "label": "Database",
+          "value": "DATABASE"
+        }
+      ]
+    },
+    {
+      "name": "bank_account_type",
+      "label": "Bank Account Type",
+      "type": "radio",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "",
+      "defaultValue": "SAVINGS",
+      "validation": {
+        "required": true,
+        "minLength": null,
+        "maxLength": null,
+        "min": null,
+        "max": null,
+        "pattern": ""
+      },
+      "options": [
+        {
+          "label": "Savings",
+          "value": "SAVINGS"
+        },
+        {
+          "label": "Current",
+          "value": "CURRENT"
+        },
+        {
+          "label": "Salary Account",
+          "value": "SALARY"
+        }
+      ]
+    },
+    {
+      "name": "bank_account_number",
+      "label": "Bank Account Number",
+      "type": "text",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Enter bank account number",
+      "defaultValue": "",
+      "validation": {
+        "required": true,
+        "minLength": 9,
+        "maxLength": 18,
+        "min": null,
+        "max": null,
+        "pattern": "NUMBER_ONLY"
+      },
+      "options": []
+    },
+    {
+      "name": "monthly_working_hours",
+      "label": "Monthly Working Hours",
+      "type": "number",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Enter working hours",
+      "defaultValue": 160,
+      "validation": {
+        "required": true,
+        "minLength": null,
+        "maxLength": null,
+        "min": 1,
+        "max": 400,
+        "pattern": ""
+      },
+      "options": []
+    },
+    {
+      "name": "employee_assets",
+      "label": "Employee Assets",
+      "type": "table",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "",
+      "defaultValue": null,
+      "validation": {
+        "required": false,
+        "minLength": null,
+        "maxLength": null,
+        "min": null,
+        "max": null,
+        "pattern": ""
+      },
+      "options": [],
+      "table": {
+        "name": "Assigned Assets",
+        "description": "Assets issued to the employee during onboarding.",
+        "columns": [
+          {
+            "name": "asset_code",
+            "label": "Asset Code",
+            "type": "text",
+            "hidden": false,
+            "readOnly": false,
+            "disabled": false,
+            "placeholder": "Enter asset code",
+            "defaultValue": "",
+            "validation": {
+              "required": true,
+              "minLength": 3,
+              "maxLength": 30,
+              "min": null,
+              "max": null,
+              "pattern": "ALPHANUMERIC"
+            },
+            "options": []
+          },
+          {
+            "name": "asset_type",
+            "label": "Asset Type",
+            "type": "select",
+            "hidden": false,
+            "readOnly": false,
+            "disabled": false,
+            "placeholder": "",
+            "defaultValue": "LAPTOP",
+            "validation": {
+              "required": true,
+              "minLength": null,
+              "maxLength": null,
+              "min": null,
+              "max": null,
+              "pattern": ""
+            },
+            "options": [
+              {
+                "label": "Laptop",
+                "value": "LAPTOP"
+              },
+              {
+                "label": "Desktop",
+                "value": "DESKTOP"
+              },
+              {
+                "label": "Mobile",
+                "value": "MOBILE"
+              },
+              {
+                "label": "Monitor",
+                "value": "MONITOR"
+              },
+              {
+                "label": "Keyboard",
+                "value": "KEYBOARD"
+              },
+              {
+                "label": "Other",
+                "value": "OTHER"
+              }
+            ]
+          },
+          {
+            "name": "asset_description",
+            "label": "Asset Description",
+            "type": "text",
+            "hidden": false,
+            "readOnly": false,
+            "disabled": false,
+            "placeholder": "Enter asset description",
+            "defaultValue": "",
+            "validation": {
+              "required": false,
+              "minLength": 2,
+              "maxLength": 100,
+              "min": null,
+              "max": null,
+              "pattern": "ALPHANUMERIC_SPECIAL"
+            },
+            "options": []
+          },
+          {
+            "name": "issue_date",
+            "label": "Issue Date",
+            "type": "date",
+            "hidden": false,
+            "readOnly": false,
+            "disabled": false,
+            "placeholder": "",
+            "defaultValue": "",
+            "dateFormat": "dd/MM/yyyy",
+            "validation": {
+              "required": true,
+              "minLength": null,
+              "maxLength": null,
+              "min": null,
+              "max": null,
+              "pattern": ""
+            },
+            "options": []
+          },
+          {
+            "name": "asset_value",
+            "label": "Asset Value",
+            "type": "number",
+            "hidden": false,
+            "readOnly": false,
+            "disabled": false,
+            "placeholder": "Enter asset value",
+            "defaultValue": null,
+            "validation": {
+              "required": true,
+              "minLength": null,
+              "maxLength": null,
+              "min": 1,
+              "max": 10000000,
+              "pattern": ""
+            },
+            "options": []
+          },
+          {
+            "name": "asset_status",
+            "label": "Asset Status",
+            "type": "radio",
+            "hidden": false,
+            "readOnly": false,
+            "disabled": false,
+            "placeholder": "",
+            "defaultValue": "ISSUED",
+            "validation": {
+              "required": true,
+              "minLength": null,
+              "maxLength": null,
+              "min": null,
+              "max": null,
+              "pattern": ""
+            },
+            "options": [
+              {
+                "label": "Issued",
+                "value": "ISSUED"
+              },
+              {
+                "label": "Returned",
+                "value": "RETURNED"
+              },
+              {
+                "label": "Damaged",
+                "value": "DAMAGED"
+              },
+              {
+                "label": "Lost",
+                "value": "LOST"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "employee_certifications",
+      "label": "Employee Certifications",
+      "type": "table",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "",
+      "defaultValue": null,
+      "validation": {
+        "required": false,
+        "minLength": null,
+        "maxLength": null,
+        "min": null,
+        "max": null,
+        "pattern": ""
+      },
+      "options": [],
+      "table": {
+        "name": "Certifications",
+        "description": "Professional certifications held by the employee.",
+        "columns": [
+          {
+            "name": "certificate_name",
+            "label": "Certificate Name",
+            "type": "text",
+            "hidden": false,
+            "readOnly": false,
+            "disabled": false,
+            "placeholder": "Enter certificate name",
+            "defaultValue": "",
+            "validation": {
+              "required": true,
+              "minLength": 2,
+              "maxLength": 120,
+              "min": null,
+              "max": null,
+              "pattern": "ALPHANUMERIC_SPECIAL"
+            },
+            "options": []
+          },
+          {
+            "name": "issuing_organization",
+            "label": "Issuing Organization",
+            "type": "text",
+            "hidden": false,
+            "readOnly": false,
+            "disabled": false,
+            "placeholder": "Enter organization",
+            "defaultValue": "",
+            "validation": {
+              "required": true,
+              "minLength": 2,
+              "maxLength": 120,
+              "min": null,
+              "max": null,
+              "pattern": "ALPHANUMERIC_SPECIAL"
+            },
+            "options": []
+          },
+          {
+            "name": "certificate_type",
+            "label": "Certificate Type",
+            "type": "select",
+            "hidden": false,
+            "readOnly": false,
+            "disabled": false,
+            "placeholder": "",
+            "defaultValue": "PROFESSIONAL",
+            "validation": {
+              "required": true,
+              "minLength": null,
+              "maxLength": null,
+              "min": null,
+              "max": null,
+              "pattern": ""
+            },
+            "options": [
+              {
+                "label": "Professional",
+                "value": "PROFESSIONAL"
+              },
+              {
+                "label": "Technical",
+                "value": "TECHNICAL"
+              },
+              {
+                "label": "Academic",
+                "value": "ACADEMIC"
+              },
+              {
+                "label": "Other",
+                "value": "OTHER"
+              }
+            ]
+          },
+          {
+            "name": "issue_date",
+            "label": "Issue Date",
+            "type": "date",
+            "hidden": false,
+            "readOnly": false,
+            "disabled": false,
+            "placeholder": "",
+            "defaultValue": "",
+            "dateFormat": "dd/MM/yyyy",
+            "validation": {
+              "required": true,
+              "minLength": null,
+              "maxLength": null,
+              "min": null,
+              "max": null,
+              "pattern": ""
+            },
+            "options": []
+          },
+          {
+            "name": "certificate_id",
+            "label": "Certificate ID",
+            "type": "text",
+            "hidden": false,
+            "readOnly": false,
+            "disabled": false,
+            "placeholder": "Enter certificate ID",
+            "defaultValue": "",
+            "validation": {
+              "required": false,
+              "minLength": 3,
+              "maxLength": 50,
+              "min": null,
+              "max": null,
+              "pattern": "ALPHANUMERIC_SPECIAL"
+            },
+            "options": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "approval_status",
+      "label": "Approval Status",
+      "type": "select",
+      "hidden": false,
+      "readOnly": true,
+      "disabled": false,
+      "placeholder": "",
+      "defaultValue": "PENDING",
+      "validation": {
+        "required": true,
+        "minLength": null,
+        "maxLength": null,
+        "min": null,
+        "max": null,
+        "pattern": ""
+      },
+      "options": [
+        {
+          "label": "Pending",
+          "value": "PENDING"
+        },
+        {
+          "label": "Approved",
+          "value": "APPROVED"
+        },
+        {
+          "label": "Rejected",
+          "value": "REJECTED"
+        }
+      ]
+    }
+  ]
+}
