@@ -1,6 +1,16 @@
-from django.urls import path
-from . import views
+# urls.py
 
-urlpatterns = [
-    path("", views.home, name="home"),
-]
+from rest_framework.routers import DefaultRouter
+
+from .views import FormDefinitionViewSet
+
+
+router = DefaultRouter()
+
+router.register(
+    "forms",
+    FormDefinitionViewSet,
+    basename="forms"
+)
+
+urlpatterns = router.urls

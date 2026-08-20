@@ -1,7 +1,13 @@
-from django.http import JsonResponse
+# views.py
 
-def home(request):
-    return JsonResponse({
-        "status": "success",
-        "message": "Business Platform Backend Running"
-    })
+from rest_framework.viewsets import ModelViewSet
+
+from .models import FormDefinition
+from .serializers import FormDefinitionSerializer
+
+
+class FormDefinitionViewSet(ModelViewSet):
+
+    queryset = FormDefinition.objects.all()
+
+    serializer_class = FormDefinitionSerializer
