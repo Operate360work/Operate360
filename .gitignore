@@ -5,14 +5,19 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.pyo
+*.pyd
 
 ###################################################
 # Virtual Environment
 ###################################################
 
 venv/
+.venv/
 env/
 ENV/
+env.bak/
+venv.bak/
 
 ###################################################
 # Django
@@ -20,6 +25,7 @@ ENV/
 
 *.log
 db.sqlite3
+db.sqlite3-journal
 media/
 staticfiles/
 
@@ -29,25 +35,45 @@ staticfiles/
 
 .env
 .env.*
+!.env.example
 
 ###################################################
 # VS Code
 ###################################################
 
-.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/mcp.json
 
 ###################################################
 # PyCharm
 ###################################################
 
 .idea/
+*.iml
+
+###################################################
+# Other IDEs / Editors
+###################################################
+
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
 
 ###################################################
 # OS Files
 ###################################################
 
 Thumbs.db
+Thumbs.db:encryptable
 .DS_Store
+desktop.ini
 
 ###################################################
 # PostgreSQL
@@ -61,14 +87,45 @@ Thumbs.db
 ###################################################
 
 node_modules/
+.npm/
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
 ###################################################
 # Angular
 ###################################################
 
 dist/
+tmp/
+out-tsc/
+bazel-out/
+
 .angular/
+.angular/cache/
+
+.sass-cache/
+
+connect.lock
 coverage/
+
+libpeerconnection.log
+testem.log
+
+typings/
+__screenshots__/
+
+.history/
+
+###################################################
+# Angular Local Environment
+###################################################
+
+*.local.ts
+environment.local.ts
+environment.*.local.ts
 
 ###################################################
 # Build
@@ -81,6 +138,8 @@ build/
 ###################################################
 
 .cache/
+.parcel-cache/
+.tmp/
 
 ###################################################
 # Testing
@@ -88,7 +147,9 @@ build/
 
 .pytest_cache/
 .coverage
+.coverage.*
 htmlcov/
+test-results/
 
 ###################################################
 # Migrations Cache
@@ -104,16 +165,83 @@ logs/
 *.log
 
 ###################################################
-# Temporary
+# Temporary Files
 ###################################################
 
-tmp/
-temp/
+*.tmp
+*.temp
 
 ###################################################
-# Package Locks
+# Python Packaging
 ###################################################
 
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+*.egg
+*.egg-info/
+.eggs/
+
+###################################################
+# Python Tools
+###################################################
+
+.mypy_cache/
+.ruff_cache/
+.pyre/
+.pytype/
+
+###################################################
+# Local Database
+###################################################
+
+*.sqlite
+*.sqlite3
+*.sqlite3-journal
+
+###################################################
+# Local Uploads / Generated Files
+###################################################
+
+backend/media/
+backend/staticfiles/
+frontend/dist/
+
+###################################################
+# Docker Local Files
+###################################################
+
+docker-compose.override.yml
+
+###################################################
+# Local Certificates / Keys
+###################################################
+
+*.pem
+*.key
+*.crt
+
+###################################################
+# Backup Files
+###################################################
+
+*.bak
+*.old
+*.orig
+
+###################################################
+# IDE / Editor Temporary Files
+###################################################
+
+*.swp
+*.swo
+*~
+
+###################################################
+# Angular / Node Cache
+###################################################
+
+.eslintcache
+
+###################################################
+# Local Reports
+###################################################
+
+reports/
