@@ -1,129 +1,69 @@
 {
-  "name": "Employee Onboarding & Master Entry",
+  "id": "customer_master_form",
+  "name": "Customer Master Form",
+  "sections": [
+    {
+      "id": "section_customer_details",
+      "name": "CustomerDetails",
+      "label": "Customer Details",
+      "description": "Basic information about the customer"
+    },
+    {
+      "id": "section_contact_information",
+      "name": "ContactInformation",
+      "label": "Contact Information",
+      "description": "Primary contact details for the customer"
+    },
+    {
+      "id": "section_address",
+      "name": "Address",
+      "label": "Address",
+      "description": "Registered and communication address details"
+    },
+    {
+      "id": "section_business_information",
+      "name": "BusinessInformation",
+      "label": "Business Information",
+      "description": "Business, tax and financial information"
+    },
+    {
+      "id": "section_contacts",
+      "name": "Contacts",
+      "label": "Customer Contacts",
+      "description": "People associated with the customer organization"
+    }
+  ],
   "fields": [
     {
-      "name": "employee_id",
-      "label": "Employee ID",
-      "type": "number",
+      "name": "customerCode",
+      "label": "Customer Code",
+      "type": "text",
       "hidden": false,
       "readOnly": true,
       "disabled": false,
       "placeholder": "Auto-generated",
       "defaultValue": "",
       "validation": {
-        "required": true,
+        "required": false,
         "minLength": null,
-        "maxLength": null,
-        "min": 1000,
-        "max": 999999,
-        "pattern": ""
-      },
-      "options": []
-    },
-    {
-      "name": "employee_code",
-      "label": "Employee Code",
-      "type": "text",
-      "hidden": false,
-      "readOnly": false,
-      "disabled": false,
-      "placeholder": "Enter employee code",
-      "defaultValue": "",
-      "validation": {
-        "required": true,
-        "minLength": 4,
-        "maxLength": 15,
+        "maxLength": 20,
         "min": null,
         "max": null,
         "pattern": "ALPHANUMERIC"
       },
-      "options": []
+      "options": [],
+      "dateFormat": "MM/DD/YYYY",
+      "sectionId": "section_customer_details"
     },
     {
-      "name": "first_name",
-      "label": "First Name",
-      "type": "text",
+      "name": "customerType",
+      "label": "Customer Type",
+      "type": "select",
       "hidden": false,
       "readOnly": false,
       "disabled": false,
-      "placeholder": "Enter first name",
+      "placeholder": "Select customer type",
       "defaultValue": "",
-      "validation": {
-        "required": true,
-        "minLength": 2,
-        "maxLength": 40,
-        "min": null,
-        "max": null,
-        "pattern": "TEXT_ONLY"
-      },
-      "options": []
-    },
-    {
-      "name": "middle_name",
-      "label": "Middle Name",
-      "type": "text",
-      "hidden": false,
-      "readOnly": false,
-      "disabled": false,
-      "placeholder": "Enter middle name",
-      "defaultValue": "",
-      "validation": {
-        "required": false,
-        "minLength": 2,
-        "maxLength": 40,
-        "min": null,
-        "max": null,
-        "pattern": "TEXT_ONLY"
-      },
-      "options": []
-    },
-    {
-      "name": "last_name",
-      "label": "Last Name",
-      "type": "text",
-      "hidden": false,
-      "readOnly": false,
-      "disabled": false,
-      "placeholder": "Enter last name",
-      "defaultValue": "",
-      "validation": {
-        "required": true,
-        "minLength": 2,
-        "maxLength": 40,
-        "min": null,
-        "max": null,
-        "pattern": "TEXT_ONLY"
-      },
-      "options": []
-    },
-    {
-      "name": "display_name",
-      "label": "Display Name",
-      "type": "text",
-      "hidden": false,
-      "readOnly": true,
-      "disabled": false,
-      "placeholder": "Generated from employee name",
-      "defaultValue": "",
-      "validation": {
-        "required": false,
-        "minLength": null,
-        "maxLength": 100,
-        "min": null,
-        "max": null,
-        "pattern": "ALPHANUMERIC_SPECIAL"
-      },
-      "options": []
-    },
-    {
-      "name": "gender",
-      "label": "Gender",
-      "type": "radio",
-      "hidden": false,
-      "readOnly": false,
-      "disabled": false,
-      "placeholder": "",
-      "defaultValue": "MALE",
       "validation": {
         "required": true,
         "minLength": null,
@@ -134,33 +74,76 @@
       },
       "options": [
         {
-          "label": "Male",
-          "value": "MALE"
+          "label": "Individual",
+          "value": "INDIVIDUAL"
         },
         {
-          "label": "Female",
-          "value": "FEMALE"
+          "label": "Company",
+          "value": "COMPANY"
         },
         {
-          "label": "Other",
-          "value": "OTHER"
+          "label": "Partnership",
+          "value": "PARTNERSHIP"
         },
         {
-          "label": "Prefer Not to Say",
-          "value": "NOT_SPECIFIED"
+          "label": "Government",
+          "value": "GOVERNMENT"
         }
-      ]
+      ],
+      "dateFormat": "MM/DD/YYYY",
+      "sectionId": "section_customer_details"
     },
     {
-      "name": "date_of_birth",
-      "label": "Date of Birth",
+      "name": "customerName",
+      "label": "Customer Name",
+      "type": "text",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Enter customer name",
+      "defaultValue": "",
+      "validation": {
+        "required": true,
+        "minLength": 2,
+        "maxLength": 150,
+        "min": null,
+        "max": null,
+        "pattern": "TEXT_ONLY"
+      },
+      "options": [],
+      "dateFormat": "MM/DD/YYYY",
+      "sectionId": "section_customer_details"
+    },
+    {
+      "name": "customerShortName",
+      "label": "Customer Short Name",
+      "type": "text",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Enter short name",
+      "defaultValue": "",
+      "validation": {
+        "required": false,
+        "minLength": 2,
+        "maxLength": 50,
+        "min": null,
+        "max": null,
+        "pattern": "ALPHANUMERIC"
+      },
+      "options": [],
+      "dateFormat": "MM/DD/YYYY",
+      "sectionId": "section_customer_details"
+    },
+    {
+      "name": "registrationDate",
+      "label": "Registration Date",
       "type": "date",
       "hidden": false,
       "readOnly": false,
       "disabled": false,
-      "placeholder": "",
+      "placeholder": "Select registration date",
       "defaultValue": "",
-      "dateFormat": "dd/MM/yyyy",
       "validation": {
         "required": true,
         "minLength": null,
@@ -169,219 +152,18 @@
         "max": null,
         "pattern": ""
       },
-      "options": []
+      "options": [],
+      "dateFormat": "MM/DD/YYYY",
+      "sectionId": "section_customer_details"
     },
     {
-      "name": "email",
-      "label": "Official Email",
-      "type": "email",
-      "hidden": false,
-      "readOnly": false,
-      "disabled": false,
-      "placeholder": "employee@company.com",
-      "defaultValue": "",
-      "validation": {
-        "required": true,
-        "minLength": null,
-        "maxLength": 120,
-        "min": null,
-        "max": null,
-        "pattern": ""
-      },
-      "options": []
-    },
-    {
-      "name": "personal_email",
-      "label": "Personal Email",
-      "type": "email",
-      "hidden": false,
-      "readOnly": false,
-      "disabled": false,
-      "placeholder": "Enter personal email",
-      "defaultValue": "",
-      "validation": {
-        "required": false,
-        "minLength": null,
-        "maxLength": 120,
-        "min": null,
-        "max": null,
-        "pattern": ""
-      },
-      "options": []
-    },
-    {
-      "name": "phone_number",
-      "label": "Phone Number",
-      "type": "text",
-      "hidden": false,
-      "readOnly": false,
-      "disabled": false,
-      "placeholder": "Enter 10 digit phone number",
-      "defaultValue": "",
-      "validation": {
-        "required": true,
-        "minLength": 10,
-        "maxLength": 10,
-        "min": null,
-        "max": null,
-        "pattern": "NUMBER_ONLY"
-      },
-      "options": []
-    },
-    {
-      "name": "employee_type",
-      "label": "Employee Type",
+      "name": "customerStatus",
+      "label": "Customer Status",
       "type": "select",
       "hidden": false,
       "readOnly": false,
       "disabled": false,
-      "placeholder": "",
-      "defaultValue": "FULL_TIME",
-      "validation": {
-        "required": true,
-        "minLength": null,
-        "maxLength": null,
-        "min": null,
-        "max": null,
-        "pattern": ""
-      },
-      "options": [
-        {
-          "label": "Full Time",
-          "value": "FULL_TIME"
-        },
-        {
-          "label": "Part Time",
-          "value": "PART_TIME"
-        },
-        {
-          "label": "Contract",
-          "value": "CONTRACT"
-        },
-        {
-          "label": "Intern",
-          "value": "INTERN"
-        },
-        {
-          "label": "Consultant",
-          "value": "CONSULTANT"
-        }
-      ]
-    },
-    {
-      "name": "department",
-      "label": "Department",
-      "type": "select",
-      "hidden": false,
-      "readOnly": false,
-      "disabled": false,
-      "placeholder": "",
-      "defaultValue": "TECHNOLOGY",
-      "validation": {
-        "required": true,
-        "minLength": null,
-        "maxLength": null,
-        "min": null,
-        "max": null,
-        "pattern": ""
-      },
-      "options": [
-        {
-          "label": "Human Resources",
-          "value": "HR"
-        },
-        {
-          "label": "Finance",
-          "value": "FINANCE"
-        },
-        {
-          "label": "Technology",
-          "value": "TECHNOLOGY"
-        },
-        {
-          "label": "Operations",
-          "value": "OPERATIONS"
-        },
-        {
-          "label": "Sales",
-          "value": "SALES"
-        },
-        {
-          "label": "Marketing",
-          "value": "MARKETING"
-        },
-        {
-          "label": "Legal",
-          "value": "LEGAL"
-        }
-      ]
-    },
-    {
-      "name": "designation",
-      "label": "Designation",
-      "type": "text",
-      "hidden": false,
-      "readOnly": false,
-      "disabled": false,
-      "placeholder": "Enter designation",
-      "defaultValue": "",
-      "validation": {
-        "required": true,
-        "minLength": 2,
-        "maxLength": 80,
-        "min": null,
-        "max": null,
-        "pattern": "ALPHANUMERIC_SPECIAL"
-      },
-      "options": []
-    },
-    {
-      "name": "joining_date",
-      "label": "Joining Date",
-      "type": "date",
-      "hidden": false,
-      "readOnly": false,
-      "disabled": false,
-      "placeholder": "",
-      "defaultValue": "",
-      "dateFormat": "dd/MM/yyyy",
-      "validation": {
-        "required": true,
-        "minLength": null,
-        "maxLength": null,
-        "min": null,
-        "max": null,
-        "pattern": ""
-      },
-      "options": []
-    },
-    {
-      "name": "salary",
-      "label": "Annual Salary",
-      "type": "number",
-      "hidden": false,
-      "readOnly": false,
-      "disabled": false,
-      "placeholder": "Enter annual salary",
-      "defaultValue": null,
-      "validation": {
-        "required": true,
-        "minLength": null,
-        "maxLength": null,
-        "min": 10000,
-        "max": 100000000,
-        "pattern": ""
-      },
-      "options": []
-    },
-    {
-      "name": "employment_status",
-      "label": "Employment Status",
-      "type": "select",
-      "hidden": false,
-      "readOnly": true,
-      "disabled": false,
-      "placeholder": "",
+      "placeholder": "Select status",
       "defaultValue": "ACTIVE",
       "validation": {
         "required": true,
@@ -397,138 +179,165 @@
           "value": "ACTIVE"
         },
         {
-          "label": "On Probation",
-          "value": "PROBATION"
-        },
-        {
-          "label": "On Notice",
-          "value": "NOTICE"
-        },
-        {
           "label": "Inactive",
           "value": "INACTIVE"
+        },
+        {
+          "label": "Blocked",
+          "value": "BLOCKED"
         }
-      ]
+      ],
+      "dateFormat": "MM/DD/YYYY",
+      "sectionId": "section_customer_details"
     },
+
     {
-      "name": "work_location",
-      "label": "Work Location",
-      "type": "select",
+      "name": "firstName",
+      "label": "First Name",
+      "type": "text",
       "hidden": false,
       "readOnly": false,
       "disabled": false,
-      "placeholder": "",
-      "defaultValue": "MUMBAI",
+      "placeholder": "Enter first name",
+      "defaultValue": "",
+      "validation": {
+        "required": true,
+        "minLength": 2,
+        "maxLength": 50,
+        "min": null,
+        "max": null,
+        "pattern": "TEXT_ONLY"
+      },
+      "options": [],
+      "dateFormat": "MM/DD/YYYY",
+      "sectionId": "section_contact_information"
+    },
+    {
+      "name": "lastName",
+      "label": "Last Name",
+      "type": "text",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Enter last name",
+      "defaultValue": "",
+      "validation": {
+        "required": true,
+        "minLength": 2,
+        "maxLength": 50,
+        "min": null,
+        "max": null,
+        "pattern": "TEXT_ONLY"
+      },
+      "options": [],
+      "dateFormat": "MM/DD/YYYY",
+      "sectionId": "section_contact_information"
+    },
+    {
+      "name": "email",
+      "label": "Email Address",
+      "type": "email",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Enter email address",
+      "defaultValue": "",
       "validation": {
         "required": true,
         "minLength": null,
-        "maxLength": null,
+        "maxLength": 150,
         "min": null,
         "max": null,
-        "pattern": ""
+        "pattern": "EMAIL"
       },
-      "options": [
-        {
-          "label": "Mumbai",
-          "value": "MUMBAI"
-        },
-        {
-          "label": "Pune",
-          "value": "PUNE"
-        },
-        {
-          "label": "Bengaluru",
-          "value": "BENGALURU"
-        },
-        {
-          "label": "Delhi",
-          "value": "DELHI"
-        },
-        {
-          "label": "Hyderabad",
-          "value": "HYDERABAD"
-        },
-        {
-          "label": "Remote",
-          "value": "REMOTE"
-        }
-      ]
+      "options": [],
+      "dateFormat": "MM/DD/YYYY",
+      "sectionId": "section_contact_information"
     },
     {
-      "name": "is_remote_employee",
-      "label": "Remote Employee",
-      "type": "checkbox",
+      "name": "mobileNumber",
+      "label": "Mobile Number",
+      "type": "text",
       "hidden": false,
       "readOnly": false,
       "disabled": false,
-      "placeholder": "",
-      "defaultValue": false,
-      "validation": {
-        "required": false,
-        "minLength": null,
-        "maxLength": null,
-        "min": null,
-        "max": null,
-        "pattern": ""
-      },
-      "options": []
-    },
-    {
-      "name": "has_previous_experience",
-      "label": "Has Previous Experience",
-      "type": "checkbox",
-      "hidden": false,
-      "readOnly": false,
-      "disabled": false,
-      "placeholder": "",
-      "defaultValue": true,
-      "validation": {
-        "required": true,
-        "minLength": null,
-        "maxLength": null,
-        "min": null,
-        "max": null,
-        "pattern": ""
-      },
-      "options": []
-    },
-    {
-      "name": "previous_experience_years",
-      "label": "Previous Experience (Years)",
-      "type": "number",
-      "hidden": false,
-      "readOnly": false,
-      "disabled": false,
-      "placeholder": "Enter years of experience",
-      "defaultValue": 0,
-      "validation": {
-        "required": false,
-        "minLength": null,
-        "maxLength": null,
-        "min": 0,
-        "max": 50,
-        "pattern": ""
-      },
-      "options": []
-    },
-    {
-      "name": "address",
-      "label": "Residential Address",
-      "type": "textarea",
-      "hidden": false,
-      "readOnly": false,
-      "disabled": false,
-      "placeholder": "Enter complete residential address",
+      "placeholder": "Enter mobile number",
       "defaultValue": "",
       "validation": {
         "required": true,
         "minLength": 10,
-        "maxLength": 500,
+        "maxLength": 15,
         "min": null,
         "max": null,
-        "pattern": "ALPHANUMERIC_SPECIAL"
+        "pattern": "NUMBER_ONLY"
       },
-      "options": []
+      "options": [],
+      "dateFormat": "MM/DD/YYYY",
+      "sectionId": "section_contact_information"
+    },
+    {
+      "name": "phoneNumber",
+      "label": "Phone Number",
+      "type": "text",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Enter phone number",
+      "defaultValue": "",
+      "validation": {
+        "required": false,
+        "minLength": 7,
+        "maxLength": 15,
+        "min": null,
+        "max": null,
+        "pattern": "NUMBER_ONLY"
+      },
+      "options": [],
+      "dateFormat": "MM/DD/YYYY",
+      "sectionId": "section_contact_information"
+    },
+
+    {
+      "name": "addressLine1",
+      "label": "Address Line 1",
+      "type": "text",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Enter address",
+      "defaultValue": "",
+      "validation": {
+        "required": true,
+        "minLength": 5,
+        "maxLength": 200,
+        "min": null,
+        "max": null,
+        "pattern": ""
+      },
+      "options": [],
+      "dateFormat": "MM/DD/YYYY",
+      "sectionId": "section_address"
+    },
+    {
+      "name": "addressLine2",
+      "label": "Address Line 2",
+      "type": "text",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Apartment, suite, landmark",
+      "defaultValue": "",
+      "validation": {
+        "required": false,
+        "minLength": null,
+        "maxLength": 200,
+        "min": null,
+        "max": null,
+        "pattern": ""
+      },
+      "options": [],
+      "dateFormat": "MM/DD/YYYY",
+      "sectionId": "section_address"
     },
     {
       "name": "city",
@@ -542,15 +351,80 @@
       "validation": {
         "required": true,
         "minLength": 2,
-        "maxLength": 50,
+        "maxLength": 100,
         "min": null,
         "max": null,
         "pattern": "TEXT_ONLY"
       },
-      "options": []
+      "options": [],
+      "dateFormat": "MM/DD/YYYY",
+      "sectionId": "section_address"
     },
     {
-      "name": "postal_code",
+      "name": "state",
+      "label": "State",
+      "type": "text",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Enter state",
+      "defaultValue": "",
+      "validation": {
+        "required": true,
+        "minLength": 2,
+        "maxLength": 100,
+        "min": null,
+        "max": null,
+        "pattern": "TEXT_ONLY"
+      },
+      "options": [],
+      "dateFormat": "MM/DD/YYYY",
+      "sectionId": "section_address"
+    },
+    {
+      "name": "country",
+      "label": "Country",
+      "type": "select",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Select country",
+      "defaultValue": "IN",
+      "validation": {
+        "required": true,
+        "minLength": null,
+        "maxLength": null,
+        "min": null,
+        "max": null,
+        "pattern": ""
+      },
+      "options": [
+        {
+          "label": "India",
+          "value": "IN"
+        },
+        {
+          "label": "United States",
+          "value": "US"
+        },
+        {
+          "label": "United Kingdom",
+          "value": "UK"
+        },
+        {
+          "label": "United Arab Emirates",
+          "value": "AE"
+        },
+        {
+          "label": "Singapore",
+          "value": "SG"
+        }
+      ],
+      "dateFormat": "MM/DD/YYYY",
+      "sectionId": "section_address"
+    },
+    {
+      "name": "postalCode",
       "label": "Postal Code",
       "type": "text",
       "hidden": false,
@@ -560,60 +434,25 @@
       "defaultValue": "",
       "validation": {
         "required": true,
-        "minLength": 6,
-        "maxLength": 6,
-        "min": null,
-        "max": null,
-        "pattern": "NUMBER_ONLY"
-      },
-      "options": []
-    },
-    {
-      "name": "emergency_contact_name",
-      "label": "Emergency Contact Name",
-      "type": "text",
-      "hidden": false,
-      "readOnly": false,
-      "disabled": false,
-      "placeholder": "Enter emergency contact name",
-      "defaultValue": "",
-      "validation": {
-        "required": true,
-        "minLength": 2,
-        "maxLength": 80,
-        "min": null,
-        "max": null,
-        "pattern": "ALPHANUMERIC_SPECIAL"
-      },
-      "options": []
-    },
-    {
-      "name": "emergency_contact_phone",
-      "label": "Emergency Contact Phone",
-      "type": "text",
-      "hidden": false,
-      "readOnly": false,
-      "disabled": false,
-      "placeholder": "Enter emergency contact phone",
-      "defaultValue": "",
-      "validation": {
-        "required": true,
-        "minLength": 10,
+        "minLength": 5,
         "maxLength": 10,
         "min": null,
         "max": null,
         "pattern": "NUMBER_ONLY"
       },
-      "options": []
+      "options": [],
+      "dateFormat": "MM/DD/YYYY",
+      "sectionId": "section_address"
     },
+
     {
-      "name": "system_username",
-      "label": "System Username",
+      "name": "taxIdentificationNumber",
+      "label": "Tax Identification Number",
       "type": "text",
       "hidden": false,
       "readOnly": false,
       "disabled": false,
-      "placeholder": "Enter username",
+      "placeholder": "Enter tax identification number",
       "defaultValue": "",
       "validation": {
         "required": true,
@@ -623,220 +462,127 @@
         "max": null,
         "pattern": "ALPHANUMERIC"
       },
-      "options": []
+      "options": [],
+      "dateFormat": "MM/DD/YYYY",
+      "sectionId": "section_business_information"
     },
     {
-      "name": "temporary_password",
-      "label": "Temporary Password",
-      "type": "password",
-      "hidden": false,
-      "readOnly": false,
-      "disabled": false,
-      "placeholder": "Enter temporary password",
-      "defaultValue": "",
-      "validation": {
-        "required": true,
-        "minLength": 8,
-        "maxLength": 30,
-        "min": null,
-        "max": null,
-        "pattern": "ALPHANUMERIC_SPECIAL"
-      },
-      "options": []
-    },
-    {
-      "name": "employee_notes",
-      "label": "Employee Notes",
-      "type": "textarea",
-      "hidden": false,
-      "readOnly": false,
-      "disabled": false,
-      "placeholder": "Enter additional notes",
-      "defaultValue": "",
-      "validation": {
-        "required": false,
-        "minLength": 0,
-        "maxLength": 1000,
-        "min": null,
-        "max": null,
-        "pattern": "ALL"
-      },
-      "options": []
-    },
-    {
-      "name": "internal_reference",
-      "label": "Internal Reference",
-      "type": "text",
-      "hidden": true,
-      "readOnly": true,
-      "disabled": false,
-      "placeholder": "System generated",
-      "defaultValue": "EMP-AUTO",
-      "validation": {
-        "required": false,
-        "minLength": null,
-        "maxLength": 50,
-        "min": null,
-        "max": null,
-        "pattern": "ALPHANUMERIC_SPECIAL"
-      },
-      "options": []
-    },
-    {
-      "name": "document_verified",
-      "label": "Documents Verified",
-      "type": "checkbox",
-      "hidden": false,
-      "readOnly": false,
-      "disabled": false,
-      "placeholder": "",
-      "defaultValue": false,
-      "validation": {
-        "required": true,
-        "minLength": null,
-        "maxLength": null,
-        "min": null,
-        "max": null,
-        "pattern": ""
-      },
-      "options": []
-    },
-    {
-      "name": "profile_document",
-      "label": "Profile Document",
-      "type": "file",
-      "hidden": false,
-      "readOnly": false,
-      "disabled": false,
-      "placeholder": "Upload profile document",
-      "defaultValue": null,
-      "validation": {
-        "required": true,
-        "minLength": null,
-        "maxLength": null,
-        "min": null,
-        "max": null,
-        "pattern": ""
-      },
-      "options": []
-    },
-    {
-      "name": "employee_skills",
-      "label": "Primary Skill",
+      "name": "industry",
+      "label": "Industry",
       "type": "select",
       "hidden": false,
       "readOnly": false,
       "disabled": false,
-      "placeholder": "",
-      "defaultValue": "ANGULAR",
-      "validation": {
-        "required": true,
-        "minLength": null,
-        "maxLength": null,
-        "min": null,
-        "max": null,
-        "pattern": ""
-      },
-      "options": [
-        {
-          "label": "Angular",
-          "value": "ANGULAR"
-        },
-        {
-          "label": "React",
-          "value": "REACT"
-        },
-        {
-          "label": "Java",
-          "value": "JAVA"
-        },
-        {
-          "label": "Python",
-          "value": "PYTHON"
-        },
-        {
-          "label": "Node.js",
-          "value": "NODE"
-        },
-        {
-          "label": "Database",
-          "value": "DATABASE"
-        }
-      ]
-    },
-    {
-      "name": "bank_account_type",
-      "label": "Bank Account Type",
-      "type": "radio",
-      "hidden": false,
-      "readOnly": false,
-      "disabled": false,
-      "placeholder": "",
-      "defaultValue": "SAVINGS",
-      "validation": {
-        "required": true,
-        "minLength": null,
-        "maxLength": null,
-        "min": null,
-        "max": null,
-        "pattern": ""
-      },
-      "options": [
-        {
-          "label": "Savings",
-          "value": "SAVINGS"
-        },
-        {
-          "label": "Current",
-          "value": "CURRENT"
-        },
-        {
-          "label": "Salary Account",
-          "value": "SALARY"
-        }
-      ]
-    },
-    {
-      "name": "bank_account_number",
-      "label": "Bank Account Number",
-      "type": "text",
-      "hidden": false,
-      "readOnly": false,
-      "disabled": false,
-      "placeholder": "Enter bank account number",
+      "placeholder": "Select industry",
       "defaultValue": "",
       "validation": {
         "required": true,
-        "minLength": 9,
-        "maxLength": 18,
+        "minLength": null,
+        "maxLength": null,
         "min": null,
         "max": null,
-        "pattern": "NUMBER_ONLY"
+        "pattern": ""
       },
-      "options": []
+      "options": [
+        {
+          "label": "Manufacturing",
+          "value": "MANUFACTURING"
+        },
+        {
+          "label": "Retail",
+          "value": "RETAIL"
+        },
+        {
+          "label": "Wholesale",
+          "value": "WHOLESALE"
+        },
+        {
+          "label": "Information Technology",
+          "value": "IT"
+        },
+        {
+          "label": "Healthcare",
+          "value": "HEALTHCARE"
+        },
+        {
+          "label": "Financial Services",
+          "value": "FINANCIAL_SERVICES"
+        },
+        {
+          "label": "Other",
+          "value": "OTHER"
+        }
+      ],
+      "dateFormat": "MM/DD/YYYY",
+      "sectionId": "section_business_information"
     },
     {
-      "name": "monthly_working_hours",
-      "label": "Monthly Working Hours",
+      "name": "creditLimit",
+      "label": "Credit Limit",
       "type": "number",
       "hidden": false,
       "readOnly": false,
       "disabled": false,
-      "placeholder": "Enter working hours",
-      "defaultValue": 160,
+      "placeholder": "Enter credit limit",
+      "defaultValue": null,
+      "validation": {
+        "required": false,
+        "minLength": null,
+        "maxLength": null,
+        "min": 0,
+        "max": 100000000,
+        "pattern": "NUMBER_ONLY"
+      },
+      "options": [],
+      "dateFormat": "MM/DD/YYYY",
+      "sectionId": "section_business_information"
+    },
+    {
+      "name": "paymentTerms",
+      "label": "Payment Terms",
+      "type": "select",
+      "hidden": false,
+      "readOnly": false,
+      "disabled": false,
+      "placeholder": "Select payment terms",
+      "defaultValue": "",
       "validation": {
         "required": true,
         "minLength": null,
         "maxLength": null,
-        "min": 1,
-        "max": 400,
+        "min": null,
+        "max": null,
         "pattern": ""
       },
-      "options": []
+      "options": [
+        {
+          "label": "Immediate",
+          "value": "IMMEDIATE"
+        },
+        {
+          "label": "Net 15",
+          "value": "NET_15"
+        },
+        {
+          "label": "Net 30",
+          "value": "NET_30"
+        },
+        {
+          "label": "Net 45",
+          "value": "NET_45"
+        },
+        {
+          "label": "Net 60",
+          "value": "NET_60"
+        }
+      ],
+      "dateFormat": "MM/DD/YYYY",
+      "sectionId": "section_business_information"
     },
+
     {
-      "name": "employee_assets",
-      "label": "Employee Assets",
+      "name": "customerContacts",
+      "label": "Customer Contacts",
       "type": "table",
       "hidden": false,
       "readOnly": false,
@@ -852,239 +598,105 @@
         "pattern": ""
       },
       "options": [],
+      "dateFormat": "MM/DD/YYYY",
+      "sectionId": "section_contacts",
       "table": {
-        "name": "Assigned Assets",
-        "description": "Assets issued to the employee during onboarding.",
+        "name": "Customer Contact Persons",
+        "description": "List of people associated with the customer",
         "columns": [
           {
-            "name": "asset_code",
-            "label": "Asset Code",
+            "name": "contactName",
+            "label": "Contact Name",
             "type": "text",
             "hidden": false,
             "readOnly": false,
             "disabled": false,
-            "placeholder": "Enter asset code",
+            "placeholder": "Enter contact name",
             "defaultValue": "",
             "validation": {
               "required": true,
-              "minLength": 3,
-              "maxLength": 30,
-              "min": null,
-              "max": null,
-              "pattern": "ALPHANUMERIC"
-            },
-            "options": []
-          },
-          {
-            "name": "asset_type",
-            "label": "Asset Type",
-            "type": "select",
-            "hidden": false,
-            "readOnly": false,
-            "disabled": false,
-            "placeholder": "",
-            "defaultValue": "LAPTOP",
-            "validation": {
-              "required": true,
-              "minLength": null,
-              "maxLength": null,
-              "min": null,
-              "max": null,
-              "pattern": ""
-            },
-            "options": [
-              {
-                "label": "Laptop",
-                "value": "LAPTOP"
-              },
-              {
-                "label": "Desktop",
-                "value": "DESKTOP"
-              },
-              {
-                "label": "Mobile",
-                "value": "MOBILE"
-              },
-              {
-                "label": "Monitor",
-                "value": "MONITOR"
-              },
-              {
-                "label": "Keyboard",
-                "value": "KEYBOARD"
-              },
-              {
-                "label": "Other",
-                "value": "OTHER"
-              }
-            ]
-          },
-          {
-            "name": "asset_description",
-            "label": "Asset Description",
-            "type": "text",
-            "hidden": false,
-            "readOnly": false,
-            "disabled": false,
-            "placeholder": "Enter asset description",
-            "defaultValue": "",
-            "validation": {
-              "required": false,
               "minLength": 2,
               "maxLength": 100,
               "min": null,
               "max": null,
-              "pattern": "ALPHANUMERIC_SPECIAL"
+              "pattern": "TEXT_ONLY"
             },
-            "options": []
+            "options": [],
+            "dateFormat": "MM/DD/YYYY",
+            "sectionId": null
           },
           {
-            "name": "issue_date",
-            "label": "Issue Date",
-            "type": "date",
-            "hidden": false,
-            "readOnly": false,
-            "disabled": false,
-            "placeholder": "",
-            "defaultValue": "",
-            "dateFormat": "dd/MM/yyyy",
-            "validation": {
-              "required": true,
-              "minLength": null,
-              "maxLength": null,
-              "min": null,
-              "max": null,
-              "pattern": ""
-            },
-            "options": []
-          },
-          {
-            "name": "asset_value",
-            "label": "Asset Value",
-            "type": "number",
-            "hidden": false,
-            "readOnly": false,
-            "disabled": false,
-            "placeholder": "Enter asset value",
-            "defaultValue": null,
-            "validation": {
-              "required": true,
-              "minLength": null,
-              "maxLength": null,
-              "min": 1,
-              "max": 10000000,
-              "pattern": ""
-            },
-            "options": []
-          },
-          {
-            "name": "asset_status",
-            "label": "Asset Status",
-            "type": "radio",
-            "hidden": false,
-            "readOnly": false,
-            "disabled": false,
-            "placeholder": "",
-            "defaultValue": "ISSUED",
-            "validation": {
-              "required": true,
-              "minLength": null,
-              "maxLength": null,
-              "min": null,
-              "max": null,
-              "pattern": ""
-            },
-            "options": [
-              {
-                "label": "Issued",
-                "value": "ISSUED"
-              },
-              {
-                "label": "Returned",
-                "value": "RETURNED"
-              },
-              {
-                "label": "Damaged",
-                "value": "DAMAGED"
-              },
-              {
-                "label": "Lost",
-                "value": "LOST"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "name": "employee_certifications",
-      "label": "Employee Certifications",
-      "type": "table",
-      "hidden": false,
-      "readOnly": false,
-      "disabled": false,
-      "placeholder": "",
-      "defaultValue": null,
-      "validation": {
-        "required": false,
-        "minLength": null,
-        "maxLength": null,
-        "min": null,
-        "max": null,
-        "pattern": ""
-      },
-      "options": [],
-      "table": {
-        "name": "Certifications",
-        "description": "Professional certifications held by the employee.",
-        "columns": [
-          {
-            "name": "certificate_name",
-            "label": "Certificate Name",
+            "name": "designation",
+            "label": "Designation",
             "type": "text",
             "hidden": false,
             "readOnly": false,
             "disabled": false,
-            "placeholder": "Enter certificate name",
+            "placeholder": "Enter designation",
             "defaultValue": "",
             "validation": {
               "required": true,
               "minLength": 2,
-              "maxLength": 120,
+              "maxLength": 100,
               "min": null,
               "max": null,
-              "pattern": "ALPHANUMERIC_SPECIAL"
+              "pattern": ""
             },
-            "options": []
+            "options": [],
+            "dateFormat": "MM/DD/YYYY",
+            "sectionId": null
           },
           {
-            "name": "issuing_organization",
-            "label": "Issuing Organization",
+            "name": "email",
+            "label": "Email",
+            "type": "email",
+            "hidden": false,
+            "readOnly": false,
+            "disabled": false,
+            "placeholder": "Enter email",
+            "defaultValue": "",
+            "validation": {
+              "required": true,
+              "minLength": null,
+              "maxLength": 150,
+              "min": null,
+              "max": null,
+              "pattern": "EMAIL"
+            },
+            "options": [],
+            "dateFormat": "MM/DD/YYYY",
+            "sectionId": null
+          },
+          {
+            "name": "phone",
+            "label": "Phone",
             "type": "text",
             "hidden": false,
             "readOnly": false,
             "disabled": false,
-            "placeholder": "Enter organization",
+            "placeholder": "Enter phone",
             "defaultValue": "",
             "validation": {
               "required": true,
-              "minLength": 2,
-              "maxLength": 120,
+              "minLength": 7,
+              "maxLength": 15,
               "min": null,
               "max": null,
-              "pattern": "ALPHANUMERIC_SPECIAL"
+              "pattern": "NUMBER_ONLY"
             },
-            "options": []
+            "options": [],
+            "dateFormat": "MM/DD/YYYY",
+            "sectionId": null
           },
           {
-            "name": "certificate_type",
-            "label": "Certificate Type",
+            "name": "contactType",
+            "label": "Contact Type",
             "type": "select",
             "hidden": false,
             "readOnly": false,
             "disabled": false,
-            "placeholder": "",
-            "defaultValue": "PROFESSIONAL",
+            "placeholder": "Select contact type",
+            "defaultValue": "",
             "validation": {
               "required": true,
               "minLength": null,
@@ -1095,96 +707,27 @@
             },
             "options": [
               {
-                "label": "Professional",
-                "value": "PROFESSIONAL"
+                "label": "Primary",
+                "value": "PRIMARY"
+              },
+              {
+                "label": "Billing",
+                "value": "BILLING"
               },
               {
                 "label": "Technical",
                 "value": "TECHNICAL"
               },
               {
-                "label": "Academic",
-                "value": "ACADEMIC"
-              },
-              {
-                "label": "Other",
-                "value": "OTHER"
+                "label": "Sales",
+                "value": "SALES"
               }
-            ]
-          },
-          {
-            "name": "issue_date",
-            "label": "Issue Date",
-            "type": "date",
-            "hidden": false,
-            "readOnly": false,
-            "disabled": false,
-            "placeholder": "",
-            "defaultValue": "",
-            "dateFormat": "dd/MM/yyyy",
-            "validation": {
-              "required": true,
-              "minLength": null,
-              "maxLength": null,
-              "min": null,
-              "max": null,
-              "pattern": ""
-            },
-            "options": []
-          },
-          {
-            "name": "certificate_id",
-            "label": "Certificate ID",
-            "type": "text",
-            "hidden": false,
-            "readOnly": false,
-            "disabled": false,
-            "placeholder": "Enter certificate ID",
-            "defaultValue": "",
-            "validation": {
-              "required": false,
-              "minLength": 3,
-              "maxLength": 50,
-              "min": null,
-              "max": null,
-              "pattern": "ALPHANUMERIC_SPECIAL"
-            },
-            "options": []
+            ],
+            "dateFormat": "MM/DD/YYYY",
+            "sectionId": null
           }
         ]
       }
-    },
-    {
-      "name": "approval_status",
-      "label": "Approval Status",
-      "type": "select",
-      "hidden": false,
-      "readOnly": true,
-      "disabled": false,
-      "placeholder": "",
-      "defaultValue": "PENDING",
-      "validation": {
-        "required": true,
-        "minLength": null,
-        "maxLength": null,
-        "min": null,
-        "max": null,
-        "pattern": ""
-      },
-      "options": [
-        {
-          "label": "Pending",
-          "value": "PENDING"
-        },
-        {
-          "label": "Approved",
-          "value": "APPROVED"
-        },
-        {
-          "label": "Rejected",
-          "value": "REJECTED"
-        }
-      ]
     }
   ]
 }

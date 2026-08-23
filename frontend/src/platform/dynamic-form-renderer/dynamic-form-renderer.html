@@ -19,520 +19,689 @@
     <!-- FORM -->
     <!-- ===================================================== -->
 
-    <form [formGroup]="dynamicForm" (ngSubmit)="submitForm()"
-      class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+    <form
+      [formGroup]="dynamicForm"
+      (ngSubmit)="submitForm()"
+      class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm"
+    >
 
-      <!-- ================================================= -->
-      <!-- NORMAL FIELDS -->
-      <!-- ================================================= -->
 
-      <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <!-- ===================================================== -->
+      <!-- STEPPER -->
+      <!-- ===================================================== -->
 
-        @for (
-        field of formConfig.fields;
-        track $index
-        ) {
+      @if (isStepperMode()) {
 
-        @if (!field.hidden && field.type !== 'table') {
-
-        <div>
+        <div class="mb-8">
 
           <!-- ================================================= -->
-          <!-- TEXT -->
+          <!-- STEPPER HEADER -->
           <!-- ================================================= -->
 
-          @if (field.type === 'text') {
-
-          <label class="mb-2 block text-sm font-medium text-gray-700">
-
-            {{ field.label || field.name }}
-
-            @if (field.validation.required) {
-            <span class="text-red-500">*</span>
-            }
-
-          </label>
-
-
-          <input type="text" [formControlName]="field.name" [readOnly]="field.readOnly"
-            [placeholder]="field.placeholder"
-            class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" />
-
-
-          @if (
-          getControl(field).touched &&
-          getControl(field).invalid
-          ) {
-
-          <div class="mt-1 text-xs text-red-500">
-
-            @if (getControl(field).hasError('required')) {
-            <div>This field is required.</div>
-            }
-
-            @if (getControl(field).hasError('minlength')) {
-            <div>
-              Minimum length is
-              {{ field.validation.minLength }}.
-            </div>
-            }
-
-            @if (getControl(field).hasError('maxlength')) {
-            <div>
-              Maximum length is
-              {{ field.validation.maxLength }}.
-            </div>
-            }
-
-            @if (getControl(field).hasError('pattern')) {
-            <div>
-              Invalid format.
-            </div>
-            }
-
-          </div>
-
-          }
-
-          }
-
-
-          <!-- ================================================= -->
-          <!-- NUMBER -->
-          <!-- ================================================= -->
-
-          @if (field.type === 'number') {
-
-          <label class="mb-2 block text-sm font-medium text-gray-700">
-
-            {{ field.label || field.name }}
-
-            @if (field.validation.required) {
-            <span class="text-red-500">*</span>
-            }
-
-          </label>
-
-
-          <input type="number" [formControlName]="field.name" [readOnly]="field.readOnly"
-            [placeholder]="field.placeholder"
-            class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" />
-
-
-          @if (
-          getControl(field).touched &&
-          getControl(field).invalid
-          ) {
-
-          <div class="mt-1 text-xs text-red-500">
-
-            @if (getControl(field).hasError('required')) {
-            <div>This field is required.</div>
-            }
-
-            @if (getControl(field).hasError('min')) {
-            <div>
-              Minimum value is
-              {{ field.validation.min }}.
-            </div>
-            }
-
-            @if (getControl(field).hasError('max')) {
-            <div>
-              Maximum value is
-              {{ field.validation.max }}.
-            </div>
-            }
-
-          </div>
-
-          }
-
-          }
-
-
-          <!-- ================================================= -->
-          <!-- EMAIL -->
-          <!-- ================================================= -->
-
-          @if (field.type === 'email') {
-
-          <label class="mb-2 block text-sm font-medium text-gray-700">
-
-            {{ field.label || field.name }}
-
-            @if (field.validation.required) {
-            <span class="text-red-500">*</span>
-            }
-
-          </label>
-
-
-          <input type="email" [formControlName]="field.name" [readOnly]="field.readOnly"
-            [placeholder]="field.placeholder"
-            class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" />
-
-
-          @if (
-          getControl(field).touched &&
-          getControl(field).invalid
-          ) {
-
-          <div class="mt-1 text-xs text-red-500">
-
-            @if (getControl(field).hasError('required')) {
-            <div>Email is required.</div>
-            }
-
-            @if (getControl(field).hasError('email')) {
-            <div>
-              Please enter a valid email.
-            </div>
-            }
-
-          </div>
-
-          }
-
-          }
-
-
-          <!-- ================================================= -->
-          <!-- PASSWORD -->
-          <!-- ================================================= -->
-
-          @if (field.type === 'password') {
-
-          <label class="mb-2 block text-sm font-medium text-gray-700">
-
-            {{ field.label || field.name }}
-
-            @if (field.validation.required) {
-            <span class="text-red-500">*</span>
-            }
-
-          </label>
-
-
-          <input type="password" [formControlName]="field.name" [readOnly]="field.readOnly"
-            [placeholder]="field.placeholder"
-            class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" />
-
-
-          @if (
-          getControl(field).touched &&
-          getControl(field).invalid
-          ) {
-
-          <div class="mt-1 text-xs text-red-500">
-
-            @if (getControl(field).hasError('required')) {
-            <div>Password is required.</div>
-            }
-
-            @if (getControl(field).hasError('minlength')) {
-            <div>
-              Minimum length is
-              {{ field.validation.minLength }}.
-            </div>
-            }
-
-            @if (getControl(field).hasError('maxlength')) {
-            <div>
-              Maximum length is
-              {{ field.validation.maxLength }}.
-            </div>
-            }
-
-          </div>
-
-          }
-
-          }
-
-
-          <!-- ================================================= -->
-          <!-- TEXTAREA -->
-          <!-- ================================================= -->
-
-          @if (field.type === 'textarea') {
-
-          <label class="mb-2 block text-sm font-medium text-gray-700">
-
-            {{ field.label || field.name }}
-
-            @if (field.validation.required) {
-            <span class="text-red-500">*</span>
-            }
-
-          </label>
-
-
-          <textarea [formControlName]="field.name" [readOnly]="field.readOnly" [placeholder]="field.placeholder"
-            class="min-h-28 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"></textarea>
-
-
-          @if (
-          getControl(field).touched &&
-          getControl(field).invalid
-          ) {
-
-          <div class="mt-1 text-xs text-red-500">
-
-            @if (getControl(field).hasError('required')) {
-            <div>This field is required.</div>
-            }
-
-            @if (getControl(field).hasError('minlength')) {
-            <div>
-              Minimum length is
-              {{ field.validation.minLength }}.
-            </div>
-            }
-
-            @if (getControl(field).hasError('maxlength')) {
-            <div>
-              Maximum length is
-              {{ field.validation.maxLength }}.
-            </div>
-            }
-
-          </div>
-
-          }
-
-          }
-
-
-          <!-- ================================================= -->
-          <!-- SELECT -->
-          <!-- ================================================= -->
-
-          @if (field.type === 'select') {
-
-          <label class="mb-2 block text-sm font-medium text-gray-700">
-
-            {{ field.label || field.name }}
-
-            @if (field.validation.required) {
-            <span class="text-red-500">*</span>
-            }
-
-          </label>
-
-
-          <select [formControlName]="field.name"
-            class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
-
-            <option value="">
-              Select an option
-            </option>
+          <div class="flex items-start">
 
             @for (
-            option of field.options;
-            track option.value
+              section of getSections();
+              track section.name;
+              let i = $index
             ) {
 
-            <option [value]="option.value">
-              {{ option.label }}
-            </option>
+              <div class="flex flex-1 items-start">
+
+                <!-- STEP -->
+
+                <button
+                  type="button"
+                  (click)="goToSection(i)"
+                  class="group flex min-w-0 flex-1 flex-col items-center"
+                >
+
+                  <!-- STEP CIRCLE -->
+
+                  <div
+                    class="flex h-9 w-9 items-center justify-center rounded-full border-2 text-sm font-semibold transition"
+
+                    [class.border-blue-600]="i === currentSectionIndex"
+                    [class.bg-blue-600]="i === currentSectionIndex"
+                    [class.text-white]="i === currentSectionIndex"
+
+                    [class.border-green-600]="i < currentSectionIndex"
+                    [class.bg-green-600]="i < currentSectionIndex"
+                    [class.text-white]="i < currentSectionIndex"
+
+                    [class.border-gray-300]="i > currentSectionIndex"
+                    [class.bg-white]="i > currentSectionIndex"
+                    [class.text-gray-500]="i > currentSectionIndex"
+                  >
+
+                    @if (i < currentSectionIndex) {
+
+                      <i class="fa-solid fa-check text-xs"></i>
+
+                    } @else {
+
+                      {{ i + 1 }}
+
+                    }
+
+                  </div>
+
+
+                  <!-- STEP LABEL -->
+
+                  <span
+                    class="mt-2 max-w-35 truncate text-center text-xs font-medium"
+
+                    [class.text-blue-600]="i === currentSectionIndex"
+                    [class.text-green-600]="i < currentSectionIndex"
+                    [class.text-gray-500]="i > currentSectionIndex"
+                  >
+
+                    {{ section.name }}
+
+                  </span>
+
+                </button>
+
+
+                <!-- CONNECTOR -->
+
+                @if (i < getSections().length - 1) {
+
+                  <div
+                    class="mt-4 h-0.5 flex-1"
+
+                    [class.bg-green-600]="i < currentSectionIndex"
+                    [class.bg-gray-200]="i >= currentSectionIndex"
+                  ></div>
+
+                }
+
+              </div>
 
             }
 
-          </select>
-
-
-          @if (
-          getControl(field).touched &&
-          getControl(field).hasError('required')
-          ) {
-
-          <div class="mt-1 text-xs text-red-500">
-            Please select an option.
-          </div>
-
-          }
-
-          }
-
-
-          <!-- ================================================= -->
-          <!-- RADIO -->
-          <!-- ================================================= -->
-
-          @if (field.type === 'radio') {
-
-          <label class="mb-3 block text-sm font-medium text-gray-700">
-
-            {{ field.label || field.name }}
-
-            @if (field.validation.required) {
-            <span class="text-red-500">*</span>
-            }
-
-          </label>
-
-
-          <div class="space-y-2">
-
-            @for (
-            option of field.options;
-            track option.value
-            ) {
-
-            <label class="flex items-center gap-2 text-sm">
-
-              <input type="radio" [formControlName]="field.name" [value]="option.value" />
-
-              {{ option.label }}
-
-            </label>
-
-            }
-
           </div>
 
 
-          @if (
-          getControl(field).touched &&
-          getControl(field).hasError('required')
-          ) {
-
-          <div class="mt-1 text-xs text-red-500">
-            Please select an option.
-          </div>
-
-          }
-
-          }
-
-
           <!-- ================================================= -->
-          <!-- CHECKBOX -->
+          <!-- CURRENT SECTION INFORMATION -->
           <!-- ================================================= -->
 
-          @if (field.type === 'checkbox') {
+          @if (getCurrentSection()) {
 
-          <label class="flex items-center gap-3 pt-7">
+            <div class="mt-6 rounded-lg border border-gray-200 bg-gray-50 px-5 py-4">
 
-            <input type="checkbox" [formControlName]="field.name" class="h-4 w-4" />
+              <h2 class="text-base font-semibold text-gray-900">
+                {{ getCurrentSection()!.name }}
+              </h2>
 
-            <span class="text-sm font-medium text-gray-700">
+              @if (getCurrentSection()!.description) {
 
-              {{ field.label || field.name }}
+                <p class="mt-1 text-sm text-gray-500">
+                  {{ getCurrentSection()!.description }}
+                </p>
 
-              @if (field.validation.required) {
-              <span class="text-red-500">*</span>
               }
 
-            </span>
-
-          </label>
-
-
-          @if (
-          getControl(field).touched &&
-          (
-          getControl(field).hasError('required') ||
-          getControl(field).hasError('requiredTrue')
-          )
-          ) {
-
-          <div class="mt-1 text-xs text-red-500">
-            You must select this option.
-          </div>
-
-          }
-
-          }
-
-
-          <!-- ================================================= -->
-          <!-- DATE -->
-          <!-- ================================================= -->
-
-          @if (field.type === 'date') {
-
-          <label class="mb-2 block text-sm font-medium text-gray-700">
-
-            {{ field.label || field.name }}
-
-            @if (field.validation.required) {
-            <span class="text-red-500">*</span>
-            }
-
-          </label>
-
-
-          <div class="relative">
-
-            <input type="text" [value]="formatDateForDisplay(
-                      getControl(field).value,
-                      field.dateFormat
-                    )" (input)="onDateInput($event, field)" [readOnly]="field.readOnly"
-              [placeholder]="getDatePlaceholder(field)"
-              class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" />
-
-          </div>
-
-
-          <p class="mt-1 text-xs text-gray-500">
-
-            Format:
-            {{ getDateFormat(field) }}
-
-          </p>
-
-
-          @if (
-          getControl(field).touched &&
-          getControl(field).invalid
-          ) {
-
-          <div class="mt-1 text-xs text-red-500">
-
-            @if (
-            getControl(field).hasError('required')
-            ) {
-
-            <div>
-              Date is required.
             </div>
-
-            }
-
-          </div>
-
-          }
-
-          }
-
-
-          <!-- ================================================= -->
-          <!-- FILE -->
-          <!-- ================================================= -->
-
-          @if (field.type === 'file') {
-
-          <label class="mb-2 block text-sm font-medium text-gray-700">
-
-            {{ field.label || field.name }}
-
-            @if (field.validation.required) {
-            <span class="text-red-500">*</span>
-            }
-
-          </label>
-
-
-          <input type="file" [disabled]="field.disabled"
-            class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm" />
 
           }
 
         </div>
 
-        }
+      }
+
+
+      <!-- ===================================================== -->
+      <!-- NORMAL / CURRENT SECTION FIELDS -->
+      <!-- ===================================================== -->
+
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+
+        @for (
+          field of getDisplayedFields();
+          track field.name
+        ) {
+
+          @if (!field.hidden && field.type !== 'table') {
+
+            <div>
+
+              <!-- ================================================= -->
+              <!-- TEXT -->
+              <!-- ================================================= -->
+
+              @if (field.type === 'text') {
+
+                <label class="mb-2 block text-sm font-medium text-gray-700">
+
+                  {{ field.label || field.name }}
+
+                  @if (field.validation.required) {
+                    <span class="text-red-500">*</span>
+                  }
+
+                </label>
+
+
+                <input
+                  type="text"
+                  [formControlName]="field.name"
+                  [readOnly]="field.readOnly"
+                  [placeholder]="field.placeholder"
+                  class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                />
+
+
+                @if (
+                  getControl(field).touched &&
+                  getControl(field).invalid
+                ) {
+
+                  <div class="mt-1 text-xs text-red-500">
+
+                    @if (getControl(field).hasError('required')) {
+                      <div>This field is required.</div>
+                    }
+
+                    @if (getControl(field).hasError('minlength')) {
+                      <div>
+                        Minimum length is
+                        {{ field.validation.minLength }}.
+                      </div>
+                    }
+
+                    @if (getControl(field).hasError('maxlength')) {
+                      <div>
+                        Maximum length is
+                        {{ field.validation.maxLength }}.
+                      </div>
+                    }
+
+                    @if (getControl(field).hasError('pattern')) {
+                      <div>
+                        Invalid format.
+                      </div>
+                    }
+
+                  </div>
+
+                }
+
+              }
+
+
+              <!-- ================================================= -->
+              <!-- NUMBER -->
+              <!-- ================================================= -->
+
+              @if (field.type === 'number') {
+
+                <label class="mb-2 block text-sm font-medium text-gray-700">
+
+                  {{ field.label || field.name }}
+
+                  @if (field.validation.required) {
+                    <span class="text-red-500">*</span>
+                  }
+
+                </label>
+
+
+                <input
+                  type="number"
+                  [formControlName]="field.name"
+                  [readOnly]="field.readOnly"
+                  [placeholder]="field.placeholder"
+                  class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                />
+
+
+                @if (
+                  getControl(field).touched &&
+                  getControl(field).invalid
+                ) {
+
+                  <div class="mt-1 text-xs text-red-500">
+
+                    @if (getControl(field).hasError('required')) {
+                      <div>This field is required.</div>
+                    }
+
+                    @if (getControl(field).hasError('min')) {
+                      <div>
+                        Minimum value is
+                        {{ field.validation.min }}.
+                      </div>
+                    }
+
+                    @if (getControl(field).hasError('max')) {
+                      <div>
+                        Maximum value is
+                        {{ field.validation.max }}.
+                      </div>
+                    }
+
+                  </div>
+
+                }
+
+              }
+
+
+              <!-- ================================================= -->
+              <!-- EMAIL -->
+              <!-- ================================================= -->
+
+              @if (field.type === 'email') {
+
+                <label class="mb-2 block text-sm font-medium text-gray-700">
+
+                  {{ field.label || field.name }}
+
+                  @if (field.validation.required) {
+                    <span class="text-red-500">*</span>
+                  }
+
+                </label>
+
+
+                <input
+                  type="email"
+                  [formControlName]="field.name"
+                  [readOnly]="field.readOnly"
+                  [placeholder]="field.placeholder"
+                  class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                />
+
+
+                @if (
+                  getControl(field).touched &&
+                  getControl(field).invalid
+                ) {
+
+                  <div class="mt-1 text-xs text-red-500">
+
+                    @if (getControl(field).hasError('required')) {
+                      <div>Email is required.</div>
+                    }
+
+                    @if (getControl(field).hasError('email')) {
+                      <div>
+                        Please enter a valid email.
+                      </div>
+                    }
+
+                  </div>
+
+                }
+
+              }
+
+
+              <!-- ================================================= -->
+              <!-- PASSWORD -->
+              <!-- ================================================= -->
+
+              @if (field.type === 'password') {
+
+                <label class="mb-2 block text-sm font-medium text-gray-700">
+
+                  {{ field.label || field.name }}
+
+                  @if (field.validation.required) {
+                    <span class="text-red-500">*</span>
+                  }
+
+                </label>
+
+
+                <input
+                  type="password"
+                  [formControlName]="field.name"
+                  [readOnly]="field.readOnly"
+                  [placeholder]="field.placeholder"
+                  class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                />
+
+
+                @if (
+                  getControl(field).touched &&
+                  getControl(field).invalid
+                ) {
+
+                  <div class="mt-1 text-xs text-red-500">
+
+                    @if (getControl(field).hasError('required')) {
+                      <div>Password is required.</div>
+                    }
+
+                    @if (getControl(field).hasError('minlength')) {
+                      <div>
+                        Minimum length is
+                        {{ field.validation.minLength }}.
+                      </div>
+                    }
+
+                    @if (getControl(field).hasError('maxlength')) {
+                      <div>
+                        Maximum length is
+                        {{ field.validation.maxLength }}.
+                      </div>
+                    }
+
+                  </div>
+
+                }
+
+              }
+
+
+              <!-- ================================================= -->
+              <!-- TEXTAREA -->
+              <!-- ================================================= -->
+
+              @if (field.type === 'textarea') {
+
+                <label class="mb-2 block text-sm font-medium text-gray-700">
+
+                  {{ field.label || field.name }}
+
+                  @if (field.validation.required) {
+                    <span class="text-red-500">*</span>
+                  }
+
+                </label>
+
+
+                <textarea
+                  [formControlName]="field.name"
+                  [readOnly]="field.readOnly"
+                  [placeholder]="field.placeholder"
+                  class="min-h-28 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                ></textarea>
+
+
+                @if (
+                  getControl(field).touched &&
+                  getControl(field).invalid
+                ) {
+
+                  <div class="mt-1 text-xs text-red-500">
+
+                    @if (getControl(field).hasError('required')) {
+                      <div>This field is required.</div>
+                    }
+
+                    @if (getControl(field).hasError('minlength')) {
+                      <div>
+                        Minimum length is
+                        {{ field.validation.minLength }}.
+                      </div>
+                    }
+
+                    @if (getControl(field).hasError('maxlength')) {
+                      <div>
+                        Maximum length is
+                        {{ field.validation.maxLength }}.
+                      </div>
+                    }
+
+                  </div>
+
+                }
+
+              }
+
+
+              <!-- ================================================= -->
+              <!-- SELECT -->
+              <!-- ================================================= -->
+
+              @if (field.type === 'select') {
+
+                <label class="mb-2 block text-sm font-medium text-gray-700">
+
+                  {{ field.label || field.name }}
+
+                  @if (field.validation.required) {
+                    <span class="text-red-500">*</span>
+                  }
+
+                </label>
+
+
+                <select
+                  [formControlName]="field.name"
+                  class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                >
+
+                  <option value="">
+                    Select an option
+                  </option>
+
+                  @for (
+                    option of field.options;
+                    track option.value
+                  ) {
+
+                    <option [value]="option.value">
+                      {{ option.label }}
+                    </option>
+
+                  }
+
+                </select>
+
+
+                @if (
+                  getControl(field).touched &&
+                  getControl(field).hasError('required')
+                ) {
+
+                  <div class="mt-1 text-xs text-red-500">
+                    Please select an option.
+                  </div>
+
+                }
+
+              }
+
+
+              <!-- ================================================= -->
+              <!-- RADIO -->
+              <!-- ================================================= -->
+
+              @if (field.type === 'radio') {
+
+                <label class="mb-3 block text-sm font-medium text-gray-700">
+
+                  {{ field.label || field.name }}
+
+                  @if (field.validation.required) {
+                    <span class="text-red-500">*</span>
+                  }
+
+                </label>
+
+
+                <div class="space-y-2">
+
+                  @for (
+                    option of field.options;
+                    track option.value
+                  ) {
+
+                    <label class="flex items-center gap-2 text-sm">
+
+                      <input
+                        type="radio"
+                        [formControlName]="field.name"
+                        [value]="option.value"
+                      />
+
+                      {{ option.label }}
+
+                    </label>
+
+                  }
+
+                </div>
+
+
+                @if (
+                  getControl(field).touched &&
+                  getControl(field).hasError('required')
+                ) {
+
+                  <div class="mt-1 text-xs text-red-500">
+                    Please select an option.
+                  </div>
+
+                }
+
+              }
+
+
+              <!-- ================================================= -->
+              <!-- CHECKBOX -->
+              <!-- ================================================= -->
+
+              @if (field.type === 'checkbox') {
+
+                <label class="flex items-center gap-3 pt-7">
+
+                  <input
+                    type="checkbox"
+                    [formControlName]="field.name"
+                    class="h-4 w-4"
+                  />
+
+                  <span class="text-sm font-medium text-gray-700">
+
+                    {{ field.label || field.name }}
+
+                    @if (field.validation.required) {
+                      <span class="text-red-500">*</span>
+                    }
+
+                  </span>
+
+                </label>
+
+
+                @if (
+                  getControl(field).touched &&
+                  (
+                    getControl(field).hasError('required') ||
+                    getControl(field).hasError('requiredTrue')
+                  )
+                ) {
+
+                  <div class="mt-1 text-xs text-red-500">
+                    You must select this option.
+                  </div>
+
+                }
+
+              }
+
+
+              <!-- ================================================= -->
+              <!-- DATE -->
+              <!-- ================================================= -->
+
+              @if (field.type === 'date') {
+
+                <label class="mb-2 block text-sm font-medium text-gray-700">
+
+                  {{ field.label || field.name }}
+
+                  @if (field.validation.required) {
+                    <span class="text-red-500">*</span>
+                  }
+
+                </label>
+
+
+                <div class="relative">
+
+                  <input
+                    type="text"
+                    [value]="formatDateForDisplay(
+                      getControl(field).value,
+                      field.dateFormat
+                    )"
+                    (input)="onDateInput($event, field)"
+                    [readOnly]="field.readOnly"
+                    [placeholder]="getDatePlaceholder(field)"
+                    class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  />
+
+                </div>
+
+
+                <p class="mt-1 text-xs text-gray-500">
+
+                  Format:
+                  {{ getDateFormat(field) }}
+
+                </p>
+
+
+                @if (
+                  getControl(field).touched &&
+                  getControl(field).invalid
+                ) {
+
+                  <div class="mt-1 text-xs text-red-500">
+
+                    @if (
+                      getControl(field).hasError('required')
+                    ) {
+
+                      <div>
+                        Date is required.
+                      </div>
+
+                    }
+
+                  </div>
+
+                }
+
+              }
+
+
+              <!-- ================================================= -->
+              <!-- FILE -->
+              <!-- ================================================= -->
+
+              @if (field.type === 'file') {
+
+                <label class="mb-2 block text-sm font-medium text-gray-700">
+
+                  {{ field.label || field.name }}
+
+                  @if (field.validation.required) {
+                    <span class="text-red-500">*</span>
+                  }
+
+                </label>
+
+
+                <input
+                  type="file"
+                  [disabled]="field.disabled"
+                  class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm"
+                />
+
+              }
+
+            </div>
+
+          }
 
         }
 
@@ -546,510 +715,554 @@
       <div class="mt-8 space-y-8">
 
         @for (
-        field of formConfig.fields;
-        track $index
+          field of getDisplayedFields();
+          track field.name
         ) {
 
-        @if (
-        field.type === 'table' &&
-        field.table &&
-        !field.hidden
-        ) {
+          @if (
+            field.type === 'table' &&
+            field.table &&
+            !field.hidden
+          ) {
 
-        <div class="overflow-hidden rounded-xl border border-gray-200">
-
-
-          <!-- TABLE HEADER -->
-
-          <div class="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-5 py-4">
-
-            <div>
-
-              <h2 class="text-base font-semibold text-gray-900">
-                {{ field.table.name }}
-              </h2>
-
-              @if (field.table.description) {
-
-              <p class="mt-1 text-sm text-gray-500">
-                {{ field.table.description }}
-              </p>
-
-              }
-
-            </div>
+            <div class="overflow-hidden rounded-xl border border-gray-200">
 
 
-            <!-- <button
-                  type="button"
-                  (click)="addTableRow(field)"
-                  class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-                >
-                  + Add Row
-                </button> -->
+              <!-- TABLE HEADER -->
 
-          </div>
+              <div class="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-5 py-4">
 
+                <div>
 
-          <!-- TABLE -->
+                  <h2 class="text-base font-semibold text-gray-900">
+                    {{ field.table.name }}
+                  </h2>
 
-          <div class="overflow-x-auto">
+                  @if (field.table.description) {
 
-            <table class="min-w-full divide-y divide-gray-200">
-
-
-              <!-- TABLE HEAD -->
-
-              <thead class="bg-gray-50">
-
-                <tr>
-
-                  @for (
-                  column of field.table.columns;
-                  track column.name
-                  ) {
-
-                  @if (!column.hidden) {
-
-                  <th
-                    class="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-600">
-
-                    {{ column.label || column.name }}
-
-                    @if (column.validation.required) {
-                    <span class="text-red-500">*</span>
-                    }
-
-                  </th>
+                    <p class="mt-1 text-sm text-gray-500">
+                      {{ field.table.description }}
+                    </p>
 
                   }
 
-                  }
+                </div>
+
+              </div>
 
 
-                  <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-600">
-                    Action
-                  </th>
+              <!-- TABLE -->
 
-                </tr>
+              <div class="overflow-x-auto">
 
-              </thead>
+                <table class="min-w-full divide-y divide-gray-200">
 
 
-              <!-- TABLE BODY -->
+                  <!-- TABLE HEAD -->
 
-              <tbody class="divide-y divide-gray-200 bg-white">
+                  <thead class="bg-gray-50">
 
-
-                @if (getTableArray(field).length === 0) {
-
-                <tr>
-
-                  <td [attr.colspan]="field.table.columns.length + 1"
-                    class="px-4 py-8 text-center text-sm text-gray-500">
-
-                    No rows added yet. Click
-
-                    <span class="font-medium">
-                      + Add Row
-                    </span>
-
-                    to add a row.
-
-                  </td>
-
-                </tr>
-
-                }
-
-
-                @for (
-                row of getTableArray(field).controls;
-                track $index;
-                let rowIndex = $index
-                ) {
-
-                <tr [formGroup]="getTableRow(field, rowIndex)" class="align-top">
-
-
-                  @for (
-                  column of field.table.columns;
-                  track column.name
-                  ) {
-
-                  @if (!column.hidden) {
-
-                  <td class="px-4 py-3">
-
-
-                    <!-- ================================= -->
-                    <!-- TEXT -->
-                    <!-- ================================= -->
-
-                    @if (column.type === 'text') {
-
-                    <input type="text" [formControlName]="column.name" [readOnly]="column.readOnly"
-                      [placeholder]="column.placeholder"
-                      class="min-w-40 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" />
-
-                    }
-
-
-                    <!-- ================================= -->
-                    <!-- NUMBER -->
-                    <!-- ================================= -->
-
-                    @if (column.type === 'number') {
-
-                    <input type="number" [formControlName]="column.name" [readOnly]="column.readOnly"
-                      [placeholder]="column.placeholder"
-                      class="min-w-32 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" />
-
-                    }
-
-
-                    <!-- ================================= -->
-                    <!-- EMAIL -->
-                    <!-- ================================= -->
-
-                    @if (column.type === 'email') {
-
-                    <input type="email" [formControlName]="column.name" [readOnly]="column.readOnly"
-                      [placeholder]="column.placeholder"
-                      class="min-w-48 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" />
-
-                    }
-
-
-                    <!-- ================================= -->
-                    <!-- PASSWORD -->
-                    <!-- ================================= -->
-
-                    @if (column.type === 'password') {
-
-                    <input type="password" [formControlName]="column.name" [readOnly]="column.readOnly"
-                      [placeholder]="column.placeholder"
-                      class="min-w-40 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" />
-
-                    }
-
-
-                    <!-- ================================= -->
-                    <!-- TEXTAREA -->
-                    <!-- ================================= -->
-
-                    @if (column.type === 'textarea') {
-
-                    <textarea [formControlName]="column.name" [readOnly]="column.readOnly"
-                      [placeholder]="column.placeholder"
-                      class="min-w-48 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"></textarea>
-
-                    }
-
-
-                    <!-- ================================= -->
-                    <!-- SELECT -->
-                    <!-- ================================= -->
-
-                    @if (column.type === 'select') {
-
-                    <select [formControlName]="column.name"
-                      class="min-w-40 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm">
-
-                      <option value="">
-                        Select
-                      </option>
+                    <tr>
 
                       @for (
-                      option of column.options;
-                      track option.value
+                        column of field.table.columns;
+                        track column.name
                       ) {
 
-                      <option [value]="option.value">
-                        {{ option.label }}
-                      </option>
+                        @if (!column.hidden) {
+
+                          <th
+                            class="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-600"
+                          >
+
+                            {{ column.label || column.name }}
+
+                            @if (column.validation.required) {
+                              <span class="text-red-500">*</span>
+                            }
+
+                          </th>
+
+                        }
 
                       }
 
-                    </select>
+
+                      <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-600">
+                        Action
+                      </th>
+
+                    </tr>
+
+                  </thead>
+
+
+                  <!-- TABLE BODY -->
+
+                  <tbody class="divide-y divide-gray-200 bg-white">
+
+
+                    @if (getTableArray(field).length === 0) {
+
+                      <tr>
+
+                        <td
+                          [attr.colspan]="field.table.columns.length + 1"
+                          class="px-4 py-8 text-center text-sm text-gray-500"
+                        >
+
+                          No rows added yet. Click
+
+                          <span class="font-medium">
+                            + Add Row
+                          </span>
+
+                          to add a row.
+
+                        </td>
+
+                      </tr>
 
                     }
 
 
-                    <!-- ================================= -->
-                    <!-- RADIO -->
-                    <!-- ================================= -->
+                    @for (
+                      row of getTableArray(field).controls;
+                      track $index;
+                      let rowIndex = $index
+                    ) {
 
-                    @if (column.type === 'radio') {
-
-                    <div class="space-y-1">
-
-                      @for (
-                      option of column.options;
-                      track option.value
-                      ) {
-
-                      <label class="flex items-center gap-2 text-sm">
-
-                        <input type="radio" [formControlName]="column.name" [value]="option.value" />
-
-                        {{ option.label }}
-
-                      </label>
-
-                      }
-
-                    </div>
-
-                    }
+                      <tr
+                        [formGroup]="getTableRow(field, rowIndex)"
+                        class="align-top"
+                      >
 
 
-                    <!-- ================================= -->
-                    <!-- CHECKBOX -->
-                    <!-- ================================= -->
+                        @for (
+                          column of field.table.columns;
+                          track column.name
+                        ) {
 
-                    @if (column.type === 'checkbox') {
+                          @if (!column.hidden) {
 
-                    <input type="checkbox" [formControlName]="column.name" class="h-4 w-4" />
-
-                    }
+                            <td class="px-4 py-3">
 
 
-                    <!-- ================================= -->
-                    <!-- DATE -->
-                    <!-- ================================= -->
+                              <!-- ================================= -->
+                              <!-- TEXT -->
+                              <!-- ================================= -->
 
-                    @if (column.type === 'date') {
+                              @if (column.type === 'text') {
 
-                    <input type="text" [value]="formatDateForDisplay(
+                                <input
+                                  type="text"
+                                  [formControlName]="column.name"
+                                  [readOnly]="column.readOnly"
+                                  [placeholder]="column.placeholder"
+                                  class="min-w-40 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                />
+
+                              }
+
+
+                              <!-- ================================= -->
+                              <!-- NUMBER -->
+                              <!-- ================================= -->
+
+                              @if (column.type === 'number') {
+
+                                <input
+                                  type="number"
+                                  [formControlName]="column.name"
+                                  [readOnly]="column.readOnly"
+                                  [placeholder]="column.placeholder"
+                                  class="min-w-32 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                />
+
+                              }
+
+
+                              <!-- ================================= -->
+                              <!-- EMAIL -->
+                              <!-- ================================= -->
+
+                              @if (column.type === 'email') {
+
+                                <input
+                                  type="email"
+                                  [formControlName]="column.name"
+                                  [readOnly]="column.readOnly"
+                                  [placeholder]="column.placeholder"
+                                  class="min-w-48 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                />
+
+                              }
+
+
+                              <!-- ================================= -->
+                              <!-- PASSWORD -->
+                              <!-- ================================= -->
+
+                              @if (column.type === 'password') {
+
+                                <input
+                                  type="password"
+                                  [formControlName]="column.name"
+                                  [readOnly]="column.readOnly"
+                                  [placeholder]="column.placeholder"
+                                  class="min-w-40 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                />
+
+                              }
+
+
+                              <!-- ================================= -->
+                              <!-- TEXTAREA -->
+                              <!-- ================================= -->
+
+                              @if (column.type === 'textarea') {
+
+                                <textarea
+                                  [formControlName]="column.name"
+                                  [readOnly]="column.readOnly"
+                                  [placeholder]="column.placeholder"
+                                  class="min-w-48 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                ></textarea>
+
+                              }
+
+
+                              <!-- ================================= -->
+                              <!-- SELECT -->
+                              <!-- ================================= -->
+
+                              @if (column.type === 'select') {
+
+                                <select
+                                  [formControlName]="column.name"
+                                  class="min-w-40 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
+                                >
+
+                                  <option value="">
+                                    Select
+                                  </option>
+
+                                  @for (
+                                    option of column.options;
+                                    track option.value
+                                  ) {
+
+                                    <option [value]="option.value">
+                                      {{ option.label }}
+                                    </option>
+
+                                  }
+
+                                </select>
+
+                              }
+
+
+                              <!-- ================================= -->
+                              <!-- RADIO -->
+                              <!-- ================================= -->
+
+                              @if (column.type === 'radio') {
+
+                                <div class="space-y-1">
+
+                                  @for (
+                                    option of column.options;
+                                    track option.value
+                                  ) {
+
+                                    <label class="flex items-center gap-2 text-sm">
+
+                                      <input
+                                        type="radio"
+                                        [formControlName]="column.name"
+                                        [value]="option.value"
+                                      />
+
+                                      {{ option.label }}
+
+                                    </label>
+
+                                  }
+
+                                </div>
+
+                              }
+
+
+                              <!-- ================================= -->
+                              <!-- CHECKBOX -->
+                              <!-- ================================= -->
+
+                              @if (column.type === 'checkbox') {
+
+                                <input
+                                  type="checkbox"
+                                  [formControlName]="column.name"
+                                  class="h-4 w-4"
+                                />
+
+                              }
+
+
+                              <!-- ================================= -->
+                              <!-- DATE -->
+                              <!-- ================================= -->
+
+                              @if (column.type === 'date') {
+
+                                <input
+                                  type="text"
+                                  [value]="formatDateForDisplay(
                                     getTableCell(
                                       field,
                                       rowIndex,
                                       column
                                     ).value,
                                     column.dateFormat
-                                  )" (input)="onTableDateInput(
+                                  )"
+                                  (input)="onTableDateInput(
                                     $event,
                                     field,
                                     rowIndex,
                                     column
-                                  )" [readOnly]="column.readOnly" [placeholder]="getDatePlaceholder(column)"
-                      class="min-w-40 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" />
+                                  )"
+                                  [readOnly]="column.readOnly"
+                                  [placeholder]="getDatePlaceholder(column)"
+                                  class="min-w-40 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                />
 
-                    <p class="mt-1 text-xs text-gray-500">
-                      {{ getDateFormat(column) }}
-                    </p>
+                                <p class="mt-1 text-xs text-gray-500">
+                                  {{ getDateFormat(column) }}
+                                </p>
+
+                              }
+
+
+                              <!-- ================================= -->
+                              <!-- FILE -->
+                              <!-- ================================= -->
+
+                              @if (column.type === 'file') {
+
+                                <input
+                                  type="file"
+                                  [disabled]="column.disabled"
+                                  class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                                />
+
+                              }
+
+
+                              <!-- ================================= -->
+                              <!-- TABLE CELL VALIDATION -->
+                              <!-- ================================= -->
+
+                              @if (
+                                getTableCell(
+                                  field,
+                                  rowIndex,
+                                  column
+                                ).touched &&
+                                getTableCell(
+                                  field,
+                                  rowIndex,
+                                  column
+                                ).invalid
+                              ) {
+
+                                <div class="mt-1 text-xs text-red-500">
+
+                                  @if (
+                                    getTableCell(
+                                      field,
+                                      rowIndex,
+                                      column
+                                    ).hasError('required')
+                                  ) {
+
+                                    <div>
+                                      Required.
+                                    </div>
+
+                                  }
+
+
+                                  @if (
+                                    getTableCell(
+                                      field,
+                                      rowIndex,
+                                      column
+                                    ).hasError('requiredTrue')
+                                  ) {
+
+                                    <div>
+                                      This option is required.
+                                    </div>
+
+                                  }
+
+
+                                  @if (
+                                    getTableCell(
+                                      field,
+                                      rowIndex,
+                                      column
+                                    ).hasError('min')
+                                  ) {
+
+                                    <div>
+                                      Min:
+                                      {{ column.validation.min }}
+                                    </div>
+
+                                  }
+
+
+                                  @if (
+                                    getTableCell(
+                                      field,
+                                      rowIndex,
+                                      column
+                                    ).hasError('max')
+                                  ) {
+
+                                    <div>
+                                      Max:
+                                      {{ column.validation.max }}
+                                    </div>
+
+                                  }
+
+
+                                  @if (
+                                    getTableCell(
+                                      field,
+                                      rowIndex,
+                                      column
+                                    ).hasError('minlength')
+                                  ) {
+
+                                    <div>
+                                      Minimum:
+                                      {{ column.validation.minLength }}
+                                      characters.
+                                    </div>
+
+                                  }
+
+
+                                  @if (
+                                    getTableCell(
+                                      field,
+                                      rowIndex,
+                                      column
+                                    ).hasError('maxlength')
+                                  ) {
+
+                                    <div>
+                                      Maximum:
+                                      {{ column.validation.maxLength }}
+                                      characters.
+                                    </div>
+
+                                  }
+
+
+                                  @if (
+                                    getTableCell(
+                                      field,
+                                      rowIndex,
+                                      column
+                                    ).hasError('email')
+                                  ) {
+
+                                    <div>
+                                      Please enter a valid email.
+                                    </div>
+
+                                  }
+
+
+                                  @if (
+                                    getTableCell(
+                                      field,
+                                      rowIndex,
+                                      column
+                                    ).hasError('pattern')
+                                  ) {
+
+                                    <div>
+                                      Invalid format.
+                                    </div>
+
+                                  }
+
+                                </div>
+
+                              }
+
+                            </td>
+
+                          }
+
+                        }
+
+
+                        <!-- ================================= -->
+                        <!-- REMOVE ROW -->
+                        <!-- ================================= -->
+
+                        <td class="whitespace-nowrap px-4 py-3 text-right">
+
+                          <button
+                            type="button"
+                            (click)="removeTableRow(field, rowIndex)"
+                            title="Remove row"
+                            class="rounded-lg p-2 text-red-600 hover:bg-red-50"
+                          >
+
+                            <i class="fa-solid fa-trash"></i>
+
+                          </button>
+
+                        </td>
+
+                      </tr>
 
                     }
 
+                  </tbody>
 
-                    <!-- ================================= -->
-                    <!-- FILE -->
-                    <!-- ================================= -->
+                </table>
 
-                    @if (column.type === 'file') {
-
-                    <input type="file" [disabled]="column.disabled"
-                      class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" />
-
-                    }
+              </div>
 
 
-                    <!-- ================================= -->
-                    <!-- TABLE CELL VALIDATION -->
-                    <!-- ================================= -->
+              <!-- ================================= -->
+              <!-- TABLE FOOTER -->
+              <!-- ================================= -->
 
-                    @if (
-                    getTableCell(
-                    field,
-                    rowIndex,
-                    column
-                    ).touched &&
-                    getTableCell(
-                    field,
-                    rowIndex,
-                    column
-                    ).invalid
-                    ) {
+              <div class="flex justify-end border-t border-gray-200 bg-gray-50 px-5 py-3">
 
-                    <div class="mt-1 text-xs text-red-500">
+                <button
+                  type="button"
+                  (click)="addTableRow(field)"
+                  class="text-sm font-medium text-blue-600 hover:text-blue-700"
+                >
+                  + Add Row
+                </button>
 
-                      @if (
-                      getTableCell(
-                      field,
-                      rowIndex,
-                      column
-                      ).hasError('required')
-                      ) {
+              </div>
 
-                      <div>
-                        Required.
-                      </div>
+            </div>
 
-                      }
-
-
-                      @if (
-                      getTableCell(
-                      field,
-                      rowIndex,
-                      column
-                      ).hasError('requiredTrue')
-                      ) {
-
-                      <div>
-                        This option is required.
-                      </div>
-
-                      }
-
-
-                      @if (
-                      getTableCell(
-                      field,
-                      rowIndex,
-                      column
-                      ).hasError('min')
-                      ) {
-
-                      <div>
-                        Min:
-                        {{ column.validation.min }}
-                      </div>
-
-                      }
-
-
-                      @if (
-                      getTableCell(
-                      field,
-                      rowIndex,
-                      column
-                      ).hasError('max')
-                      ) {
-
-                      <div>
-                        Max:
-                        {{ column.validation.max }}
-                      </div>
-
-                      }
-
-
-                      @if (
-                      getTableCell(
-                      field,
-                      rowIndex,
-                      column
-                      ).hasError('minlength')
-                      ) {
-
-                      <div>
-                        Minimum:
-                        {{ column.validation.minLength }}
-                        characters.
-                      </div>
-
-                      }
-
-
-                      @if (
-                      getTableCell(
-                      field,
-                      rowIndex,
-                      column
-                      ).hasError('maxlength')
-                      ) {
-
-                      <div>
-                        Maximum:
-                        {{ column.validation.maxLength }}
-                        characters.
-                      </div>
-
-                      }
-
-
-                      @if (
-                      getTableCell(
-                      field,
-                      rowIndex,
-                      column
-                      ).hasError('email')
-                      ) {
-
-                      <div>
-                        Please enter a valid email.
-                      </div>
-
-                      }
-
-
-                      @if (
-                      getTableCell(
-                      field,
-                      rowIndex,
-                      column
-                      ).hasError('pattern')
-                      ) {
-
-                      <div>
-                        Invalid format.
-                      </div>
-
-                      }
-
-                    </div>
-
-                    }
-
-                  </td>
-
-                  }
-
-                  }
-
-
-                  <!-- ================================= -->
-                  <!-- REMOVE ROW -->
-                  <!-- ================================= -->
-
-                  <td class="whitespace-nowrap px-4 py-3 text-right">
-
-                    <button type="button" (click)="removeTableRow(field, rowIndex)" title="Remove row"
-                      class="rounded-lg p-2 text-red-600 hover:bg-red-50">
-                      <i class="fa-solid fa-trash"></i>
-                    </button>
-
-                  </td>
-
-                </tr>
-
-                }
-
-              </tbody>
-
-            </table>
-
-          </div>
-
-
-          <!-- ================================= -->
-          <!-- TABLE FOOTER -->
-          <!-- ================================= -->
-
-          <div class="flex justify-end border-t border-gray-200 bg-gray-50 px-5 py-3">
-
-            <button type="button" (click)="addTableRow(field)"
-              class="text-sm font-medium text-blue-600 hover:text-blue-700">
-              + Add Row
-            </button>
-
-          </div>
-
-        </div>
-
-        }
+          }
 
         }
 
@@ -1057,15 +1270,65 @@
 
 
       <!-- ===================================================== -->
-      <!-- SUBMIT -->
+      <!-- FORM NAVIGATION -->
       <!-- ===================================================== -->
 
-      <div class="mt-8 flex justify-end border-t border-gray-200 pt-5">
+      <div class="mt-8 flex items-center justify-between border-t border-gray-200 pt-5">
 
-        <button type="submit"
-          class="rounded-lg bg-green-600 px-6 py-2.5 text-sm font-medium text-white transition hover:bg-green-700">
-          Submit Form
-        </button>
+        <!-- BACK -->
+
+        @if (isStepperMode() && !isFirstSection()) {
+
+          <button
+            type="button"
+            (click)="previousSection()"
+            class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+          >
+            ← Back
+          </button>
+
+        } @else {
+
+          <div></div>
+
+        }
+
+
+        <!-- NEXT / SUBMIT -->
+
+        @if (isStepperMode()) {
+
+          @if (!isLastSection()) {
+
+            <button
+              type="button"
+              (click)="nextSection()"
+              class="rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700"
+            >
+              Next →
+            </button>
+
+          } @else {
+
+            <button
+              type="submit"
+              class="rounded-lg bg-green-600 px-6 py-2.5 text-sm font-medium text-white transition hover:bg-green-700"
+            >
+              Submit Form
+            </button>
+
+          }
+
+        } @else {
+
+          <button
+            type="submit"
+            class="rounded-lg bg-green-600 px-6 py-2.5 text-sm font-medium text-white transition hover:bg-green-700"
+          >
+            Submit Form
+          </button>
+
+        }
 
       </div>
 
@@ -1092,7 +1355,10 @@
           Status:
         </span>
 
-        <span [class.text-green-400]="dynamicForm.valid" [class.text-red-400]="dynamicForm.invalid">
+        <span
+          [class.text-green-400]="dynamicForm.valid"
+          [class.text-red-400]="dynamicForm.invalid"
+        >
           {{ dynamicForm.status }}
         </span>
 

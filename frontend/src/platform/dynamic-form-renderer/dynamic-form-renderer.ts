@@ -94,6 +94,8 @@ interface TableColumn {
   options: FormOption[];
 
   dateFormat?: DateFormat;
+
+  sectionId?: string | null;
 }
 
 
@@ -130,9 +132,31 @@ interface FormField {
 
   options: FormOption[];
 
-  table?: TableConfig;
-
   dateFormat?: DateFormat;
+
+  sectionId?: string | null;
+
+  table?: TableConfig;
+}
+
+
+/* =========================================================
+   FORM SECTION
+
+   IMPORTANT:
+   This matches your ACTUAL JSON.
+
+   Fields are NOT stored inside the section.
+
+   Fields are connected to the section through:
+   field.sectionId === section.id
+   ========================================================= */
+
+interface FormSection {
+  id: string;
+  name: string;
+  label: string;
+  description?: string;
 }
 
 
@@ -141,7 +165,11 @@ interface FormField {
    ========================================================= */
 
 interface FormConfig {
+  id?: string;
   name: string;
+
+  sections?: FormSection[];
+
   fields: FormField[];
 }
 
@@ -180,11 +208,425 @@ export class DynamicFormRenderer implements OnInit {
 
 
   /* =======================================================
+     STEPPER
+     ======================================================= */
+
+  currentSectionIndex = 0;
+
+
+  /* =======================================================
      INITIALIZE
      ======================================================= */
 
   ngOnInit(): void {
     this.buildForm();
+  }
+
+
+  /* =======================================================
+     CHECK STEPPER MODE
+     ======================================================= */
+
+  isStepperMode(): boolean {
+
+    return !!(
+      this.formConfig.sections &&
+      this.formConfig.sections.length > 0
+    );
+
+  }
+
+
+  /* =======================================================
+     GET SECTIONS
+     ======================================================= */
+
+  getSections(): FormSection[] {
+
+    return this.formConfig.sections || [];
+
+  }
+
+
+  /* =======================================================
+     GET CURRENT SECTION
+     ======================================================= */
+
+  getCurrentSection(): FormSection | null {
+
+    const sections = this.getSections();
+
+    if (
+      sections.length === 0 ||
+      this.currentSectionIndex < 0 ||
+      this.currentSectionIndex >= sections.length
+    ) {
+
+      return null;
+
+    }
+
+    return sections[this.currentSectionIndex];
+
+  }
+
+
+  /* =======================================================
+     GET CURRENT SECTION FIELDS
+
+     Fields belong to a section through sectionId.
+
+     Example:
+
+     section.id = "section_123"
+
+     field.sectionId = "section_123"
+
+     Therefore the field belongs to that section.
+     ======================================================= */
+
+  getCurrentSectionFields(): FormField[] {
+
+    const section = this.getCurrentSection();
+
+    if (!section) {
+      return [];
+    }
+
+    return this.formConfig.fields.filter(
+      field => field.sectionId === section.id
+    );
+
+  }
+
+
+  /* =======================================================
+     GET DISPLAYED FIELDS
+     ======================================================= */
+
+  getDisplayedFields(): FormField[] {
+
+    /*
+     * NORMAL FORM MODE
+     *
+     * No sections means the entire
+     * form is rendered.
+     */
+    if (!this.isStepperMode()) {
+
+      return this.formConfig.fields;
+
+    }
+
+
+    /*
+     * STEPPER MODE
+     *
+     * Only fields belonging to the
+     * current section are rendered.
+     */
+    return this.getCurrentSectionFields();
+
+  }
+
+
+  /* =======================================================
+     GET FIELDS NOT BELONGING TO ANY SECTION
+     ======================================================= */
+
+  getUnsectionedFields(): FormField[] {
+
+    return this.formConfig.fields.filter(
+      field =>
+        !field.sectionId
+    );
+
+  }
+
+
+  /* =======================================================
+     CHECK FIRST SECTION
+     ======================================================= */
+
+  isFirstSection(): boolean {
+
+    return this.currentSectionIndex === 0;
+
+  }
+
+
+  /* =======================================================
+     CHECK LAST SECTION
+     ======================================================= */
+
+  isLastSection(): boolean {
+
+    return (
+      this.currentSectionIndex ===
+      this.getSections().length - 1
+    );
+
+  }
+
+
+  /* =======================================================
+     NEXT SECTION
+     * ======================================================= */
+
+  nextSection(): void {
+
+    /*
+     * Validate current section
+     * before moving forward.
+     */
+    if (!this.validateCurrentSection()) {
+      return;
+    }
+
+
+    if (!this.isLastSection()) {
+
+      this.currentSectionIndex++;
+
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+
+    }
+
+  }
+
+
+  /* =======================================================
+     PREVIOUS SECTION
+     ======================================================= */
+
+  previousSection(): void {
+
+    if (!this.isFirstSection()) {
+
+      this.currentSectionIndex--;
+
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+
+    }
+
+  }
+
+
+  /* =======================================================
+     GO TO SECTION
+     ======================================================= */
+
+  goToSection(index: number): void {
+
+    if (
+      index < 0 ||
+      index >= this.getSections().length
+    ) {
+
+      return;
+
+    }
+
+
+    /*
+     * Allow going backward freely.
+     *
+     * For forward navigation,
+     * validate sections one by one.
+     */
+    if (index > this.currentSectionIndex) {
+
+      for (
+        let i = this.currentSectionIndex;
+        i < index;
+        i++
+      ) {
+
+        if (
+          !this.validateSection(
+            this.getSections()[i]
+          )
+        ) {
+
+          return;
+
+        }
+
+      }
+
+    }
+
+
+    this.currentSectionIndex = index;
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+
+  }
+
+
+  /* =======================================================
+     VALIDATE CURRENT SECTION
+     ======================================================= */
+
+  validateCurrentSection(): boolean {
+
+    const section =
+      this.getCurrentSection();
+
+    if (!section) {
+      return true;
+    }
+
+    return this.validateSection(section);
+
+  }
+
+
+  /* =======================================================
+     VALIDATE SECTION
+
+     IMPORTANT:
+     Section fields are now found using sectionId.
+     ======================================================= */
+
+  validateSection(
+    section: FormSection
+  ): boolean {
+
+    let valid = true;
+
+
+    /*
+     * Get all fields belonging to this section.
+     */
+    const sectionFields =
+      this.formConfig.fields.filter(
+        field =>
+          field.sectionId === section.id
+      );
+
+
+    for (
+      const field of sectionFields
+    ) {
+
+
+      /* ---------------------------------------------------
+         HIDDEN FIELDS
+         --------------------------------------------------- */
+
+      if (field.hidden) {
+        continue;
+      }
+
+
+      /* ---------------------------------------------------
+         TABLE
+         --------------------------------------------------- */
+
+      if (field.type === 'table') {
+
+        const table =
+          this.getTableArray(field);
+
+
+        /*
+         * Validate existing table rows.
+         */
+        table.controls.forEach(row => {
+
+          Object.values(
+            row.controls
+          ).forEach(control => {
+
+            control.markAsTouched();
+            control.updateValueAndValidity();
+
+            if (control.invalid) {
+              valid = false;
+            }
+
+          });
+
+        });
+
+        continue;
+
+      }
+
+
+      /* ---------------------------------------------------
+         NORMAL FIELD
+         --------------------------------------------------- */
+
+      /*
+       * Empty field names are ignored.
+       *
+       * Your current JSON contains table fields
+       * with an empty name, so this prevents
+       * accidental FormGroup lookup problems.
+       */
+      if (!field.name) {
+        continue;
+      }
+
+      const control =
+        this.dynamicForm.get(
+          field.name
+        );
+
+      if (!control) {
+        continue;
+      }
+
+      control.markAsTouched();
+      control.updateValueAndValidity();
+
+      if (control.invalid) {
+        valid = false;
+      }
+
+    }
+
+
+    return valid;
+
+  }
+
+
+  /* =======================================================
+     GET FIELD BY NAME
+     ======================================================= */
+
+  getFieldByName(
+    fieldName: string
+  ): FormField | undefined {
+
+    return this.formConfig.fields.find(
+      field =>
+        field.name === fieldName
+    );
+
+  }
+
+
+  /* =======================================================
+     GET NORMAL FORM FIELDS
+     ======================================================= */
+
+  getNormalFields(): FormField[] {
+
+    return this.formConfig.fields;
+
   }
 
 
@@ -198,7 +640,11 @@ export class DynamicFormRenderer implements OnInit {
       [key: string]: AbstractControl
     } = {};
 
-    for (const field of this.formConfig.fields) {
+
+    for (
+      const field of this.formConfig.fields
+    ) {
+
 
       /* ---------------------------------------------------
          TABLE
@@ -207,11 +653,22 @@ export class DynamicFormRenderer implements OnInit {
       if (field.type === 'table') {
 
         const tableName =
-          field.name || this.generateTableName(field);
+          field.name ||
+          this.generateTableName(field);
 
         controls[tableName] =
           new FormArray<FormGroup>([]);
 
+        continue;
+
+      }
+
+
+      /* ---------------------------------------------------
+         IGNORE EMPTY FIELD NAME
+         --------------------------------------------------- */
+
+      if (!field.name) {
         continue;
       }
 
@@ -224,7 +681,8 @@ export class DynamicFormRenderer implements OnInit {
         this.buildValidators(field);
 
       let initialValue =
-        field.defaultValue ?? this.getDefaultValue(field);
+        field.defaultValue ??
+        this.getDefaultValue(field);
 
 
       /* ---------------------------------------------------
@@ -241,6 +699,7 @@ export class DynamicFormRenderer implements OnInit {
             String(field.defaultValue),
             field.dateFormat
           );
+
       }
 
 
@@ -254,11 +713,13 @@ export class DynamicFormRenderer implements OnInit {
         );
 
       controls[field.name] = control;
+
     }
 
 
     this.dynamicForm =
       new FormGroup(controls);
+
   }
 
 
@@ -275,6 +736,7 @@ export class DynamicFormRenderer implements OnInit {
     }
 
     return '';
+
   }
 
 
@@ -309,7 +771,9 @@ export class DynamicFormRenderer implements OnInit {
         validators.push(
           Validators.required
         );
+
       }
+
     }
 
 
@@ -327,6 +791,7 @@ export class DynamicFormRenderer implements OnInit {
           validation.minLength
         )
       );
+
     }
 
 
@@ -344,6 +809,7 @@ export class DynamicFormRenderer implements OnInit {
           validation.maxLength
         )
       );
+
     }
 
 
@@ -361,6 +827,7 @@ export class DynamicFormRenderer implements OnInit {
           validation.min
         )
       );
+
     }
 
 
@@ -378,6 +845,7 @@ export class DynamicFormRenderer implements OnInit {
           validation.max
         )
       );
+
     }
 
 
@@ -390,6 +858,7 @@ export class DynamicFormRenderer implements OnInit {
       validators.push(
         Validators.email
       );
+
     }
 
 
@@ -412,11 +881,14 @@ export class DynamicFormRenderer implements OnInit {
         validators.push(
           Validators.pattern(pattern)
         );
+
       }
+
     }
 
 
     return validators;
+
   }
 
 
@@ -447,7 +919,9 @@ export class DynamicFormRenderer implements OnInit {
 
       default:
         return null;
+
     }
+
   }
 
 
@@ -462,6 +936,7 @@ export class DynamicFormRenderer implements OnInit {
     return this.dynamicForm.get(
       field.name
     ) as FormControl;
+
   }
 
 
@@ -473,7 +948,9 @@ export class DynamicFormRenderer implements OnInit {
     field: FormField | TableColumn
   ): DateFormat {
 
-    return field.dateFormat || 'dd/MM/yyyy';
+    return field.dateFormat ||
+      'dd/MM/yyyy';
+
   }
 
 
@@ -487,17 +964,12 @@ export class DynamicFormRenderer implements OnInit {
 
     return this.getDateFormat(field)
       .replace('yyyy', 'YYYY');
+
   }
 
 
   /* =======================================================
      FORMAT DATE FOR DISPLAY
-     
-     Internal form value:
-       yyyy-MM-dd
-
-     Display value:
-       configured format
      ======================================================= */
 
   formatDateForDisplay(
@@ -512,16 +984,15 @@ export class DynamicFormRenderer implements OnInit {
     const isoValue =
       String(value);
 
-    /*
-     * Expected internal format:
-     * yyyy-MM-dd
-     */
 
     if (
       !/^\d{4}-\d{2}-\d{2}$/.test(isoValue)
     ) {
+
       return isoValue;
+
     }
+
 
     const [
       year,
@@ -556,15 +1027,14 @@ export class DynamicFormRenderer implements OnInit {
 
       default:
         return isoValue;
+
     }
+
   }
 
 
   /* =======================================================
      NORMALIZE DATE FOR HTML/FORM VALUE
-     
-     Converts configured display format into:
-       yyyy-MM-dd
      ======================================================= */
 
   normalizeDateForInput(
@@ -575,6 +1045,7 @@ export class DynamicFormRenderer implements OnInit {
       value,
       'dd/MM/yyyy'
     );
+
   }
 
 
@@ -592,15 +1063,12 @@ export class DynamicFormRenderer implements OnInit {
     }
 
 
-    /*
-     * Already ISO.
-     */
-
     if (
       /^\d{4}-\d{2}-\d{2}$/.test(value)
     ) {
 
       return value;
+
     }
 
 
@@ -662,10 +1130,12 @@ export class DynamicFormRenderer implements OnInit {
 
       default:
         return value;
+
     }
 
 
     return `${year}-${month}-${day}`;
+
   }
 
 
@@ -683,16 +1153,12 @@ export class DynamicFormRenderer implements OnInit {
     }
 
 
-    /*
-     * Internal date representation must be:
-     * yyyy-MM-dd
-     */
-
     if (
       !/^\d{4}-\d{2}-\d{2}$/.test(value)
     ) {
 
       return false;
+
     }
 
 
@@ -718,6 +1184,7 @@ export class DynamicFormRenderer implements OnInit {
       date.getMonth() === month - 1 &&
       date.getDate() === day
     );
+
   }
 
 
@@ -739,21 +1206,17 @@ export class DynamicFormRenderer implements OnInit {
     ) {
 
       return null;
+
     }
 
 
     return value;
+
   }
 
 
   /* =======================================================
      NORMAL DATE INPUT
-     
-     User types:
-       19/08/2026
-
-     Form stores:
-       2026-08-19
      ======================================================= */
 
   onDateInput(
@@ -767,14 +1230,9 @@ export class DynamicFormRenderer implements OnInit {
     const displayValue =
       input.value;
 
-
     const control =
       this.getControl(field);
 
-
-    /*
-     * Empty value.
-     */
 
     if (!displayValue) {
 
@@ -786,6 +1244,7 @@ export class DynamicFormRenderer implements OnInit {
       );
 
       return;
+
     }
 
 
@@ -795,11 +1254,6 @@ export class DynamicFormRenderer implements OnInit {
         field.dateFormat
       );
 
-
-    /*
-     * If the value is a valid ISO date,
-     * store it internally.
-     */
 
     if (
       this.isValidDateValue(
@@ -816,24 +1270,19 @@ export class DynamicFormRenderer implements OnInit {
 
     } else {
 
-      /*
-       * Keep what user typed in the control
-       * only when it isn't a complete valid date.
-       *
-       * This allows the user to continue typing.
-       */
-
       control.setValue(
         displayValue,
         {
           emitEvent: false
         }
       );
+
     }
 
 
     control.markAsDirty();
     control.updateValueAndValidity();
+
   }
 
 
@@ -854,7 +1303,6 @@ export class DynamicFormRenderer implements OnInit {
     const displayValue =
       input.value;
 
-
     const control =
       this.getTableCell(
         field,
@@ -862,10 +1310,6 @@ export class DynamicFormRenderer implements OnInit {
         column
       );
 
-
-    /*
-     * Empty value.
-     */
 
     if (!displayValue) {
 
@@ -877,6 +1321,7 @@ export class DynamicFormRenderer implements OnInit {
       );
 
       return;
+
     }
 
 
@@ -908,11 +1353,13 @@ export class DynamicFormRenderer implements OnInit {
           emitEvent: false
         }
       );
+
     }
 
 
     control.markAsDirty();
     control.updateValueAndValidity();
+
   }
 
 
@@ -930,10 +1377,6 @@ export class DynamicFormRenderer implements OnInit {
       const field of this.formConfig.fields
     ) {
 
-      /* ---------------------------------------------------
-         NORMAL DATE FIELD
-         --------------------------------------------------- */
-
       if (
         field.type === 'date' &&
         field.name
@@ -943,12 +1386,9 @@ export class DynamicFormRenderer implements OnInit {
           this.dateToIso(
             value[field.name]
           );
+
       }
 
-
-      /* ---------------------------------------------------
-         TABLE
-         --------------------------------------------------- */
 
       if (
         field.type === 'table' &&
@@ -958,7 +1398,6 @@ export class DynamicFormRenderer implements OnInit {
         const tableName =
           field.name ||
           this.generateTableName(field);
-
 
         const rows =
           value[tableName] || [];
@@ -979,6 +1418,7 @@ export class DynamicFormRenderer implements OnInit {
                     this.dateToIso(
                       row[column.name]
                     );
+
                 }
 
               }
@@ -986,12 +1426,14 @@ export class DynamicFormRenderer implements OnInit {
 
           }
         );
+
       }
 
     }
 
 
     return value;
+
   }
 
 
@@ -1007,10 +1449,10 @@ export class DynamicFormRenderer implements OnInit {
       field.name ||
       this.generateTableName(field);
 
-
     return this.dynamicForm.get(
       tableName
     ) as FormArray<FormGroup>;
+
   }
 
 
@@ -1028,10 +1470,12 @@ export class DynamicFormRenderer implements OnInit {
         .trim()
         .toLowerCase()
         .replace(/\s+/g, '_');
+
     }
 
 
     return `table_${this.formConfig.fields.indexOf(field)}`;
+
   }
 
 
@@ -1049,6 +1493,7 @@ export class DynamicFormRenderer implements OnInit {
     ) {
 
       return;
+
     }
 
 
@@ -1061,18 +1506,21 @@ export class DynamicFormRenderer implements OnInit {
       const column of field.table.columns
     ) {
 
+      /*
+       * Ignore invalid/empty column names.
+       */
+      if (!column.name) {
+        continue;
+      }
+
+
       const validators =
         this.buildValidators(column);
-
 
       let initialValue =
         column.defaultValue ??
         this.getDefaultValue(column);
 
-
-      /* ---------------------------------------------------
-         DATE DEFAULT VALUE
-         --------------------------------------------------- */
 
       if (
         column.type === 'date' &&
@@ -1084,6 +1532,7 @@ export class DynamicFormRenderer implements OnInit {
             String(column.defaultValue),
             column.dateFormat
           );
+
       }
 
 
@@ -1095,6 +1544,7 @@ export class DynamicFormRenderer implements OnInit {
           },
           validators
         );
+
     }
 
 
@@ -1104,6 +1554,7 @@ export class DynamicFormRenderer implements OnInit {
 
     this.getTableArray(field)
       .push(row);
+
   }
 
 
@@ -1118,6 +1569,7 @@ export class DynamicFormRenderer implements OnInit {
 
     this.getTableArray(field)
       .removeAt(rowIndex);
+
   }
 
 
@@ -1132,6 +1584,7 @@ export class DynamicFormRenderer implements OnInit {
 
     return this.getTableArray(field)
       .at(rowIndex) as FormGroup;
+
   }
 
 
@@ -1151,10 +1604,10 @@ export class DynamicFormRenderer implements OnInit {
         rowIndex
       );
 
-
     return row.get(
       column.name
     ) as FormControl;
+
   }
 
 
@@ -1176,11 +1629,11 @@ export class DynamicFormRenderer implements OnInit {
         column
       );
 
-
     return (
       control.touched &&
       control.hasError(error)
     );
+
   }
 
 
@@ -1213,42 +1666,37 @@ export class DynamicFormRenderer implements OnInit {
 
 
     if (control.hasError('minlength')) {
-
       return `Minimum length is ${column.validation.minLength}.`;
     }
 
 
     if (control.hasError('maxlength')) {
-
       return `Maximum length is ${column.validation.maxLength}.`;
     }
 
 
     if (control.hasError('min')) {
-
       return `Minimum value is ${column.validation.min}.`;
     }
 
 
     if (control.hasError('max')) {
-
       return `Maximum value is ${column.validation.max}.`;
     }
 
 
     if (control.hasError('email')) {
-
       return 'Please enter a valid email.';
     }
 
 
     if (control.hasError('pattern')) {
-
       return 'Invalid format.';
     }
 
 
     return '';
+
   }
 
 
@@ -1262,6 +1710,7 @@ export class DynamicFormRenderer implements OnInit {
 
     return this.getTableArray(field)
       .length;
+
   }
 
 
@@ -1286,12 +1735,14 @@ export class DynamicFormRenderer implements OnInit {
           control => {
 
             control.markAsTouched();
+            control.updateValueAndValidity();
 
           }
         );
 
       }
     );
+
   }
 
 
@@ -1300,6 +1751,20 @@ export class DynamicFormRenderer implements OnInit {
      ======================================================= */
 
   submitForm(): void {
+
+    /*
+     * In stepper mode, only the final
+     * section can submit the form.
+     */
+    if (
+      this.isStepperMode() &&
+      !this.isLastSection()
+    ) {
+
+      return;
+
+    }
+
 
     if (this.dynamicForm.invalid) {
 
@@ -1313,7 +1778,9 @@ export class DynamicFormRenderer implements OnInit {
         if (field.type === 'table') {
 
           this.validateTableRows(field);
+
         }
+
       }
 
 
@@ -1328,6 +1795,7 @@ export class DynamicFormRenderer implements OnInit {
 
 
       return;
+
     }
 
 
@@ -1339,6 +1807,7 @@ export class DynamicFormRenderer implements OnInit {
     console.log(
       this.getNormalizedFormValue()
     );
+
   }
 
 
@@ -1349,6 +1818,7 @@ export class DynamicFormRenderer implements OnInit {
   getFormValue(): any {
 
     return this.dynamicForm.getRawValue();
+
   }
 
 
@@ -1362,6 +1832,7 @@ export class DynamicFormRenderer implements OnInit {
 
     return this.getTableArray(field)
       .getRawValue();
+
   }
 
 
@@ -1374,6 +1845,7 @@ export class DynamicFormRenderer implements OnInit {
   ): boolean {
 
     return field.type === 'table';
+
   }
 
 
@@ -1387,6 +1859,7 @@ export class DynamicFormRenderer implements OnInit {
 
     return this.getTableArray(field)
       .length > 0;
+
   }
 
 }
