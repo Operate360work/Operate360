@@ -2,1350 +2,363 @@
 
   <div class="mx-auto max-w-6xl">
 
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
 
-    <!-- ===================================================== -->
-    <!-- HEADER -->
-    <!-- ===================================================== -->
-
-    <div class="mb-6">
-
-      <h1 class="text-2xl font-bold text-gray-900">
-        Form Builder
-      </h1>
-
-      <p class="mt-1 text-sm text-gray-500">
-        Create a dynamic form without writing code.
-      </p>
-
-    </div>
-
-
-    <!-- ===================================================== -->
-    <!-- FORM DETAILS -->
-    <!-- ===================================================== -->
-
-    <div class="mb-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+    <div class="mb-6 flex items-start justify-between">
 
       <div>
 
-        <label
-          for="formName"
-          class="mb-2 block text-sm font-medium text-gray-700"
-        >
-          Form Name
-        </label>
+        <h1 class="text-2xl font-bold text-gray-900">
 
-        <input
-          id="formName"
-          type="text"
-          [(ngModel)]="form.name"
-          placeholder="Enter form name"
-          class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-        />
+          Form Builder -
+
+          @if (mode === 'create') {
+            Create
+          }
+
+          @if (mode === 'edit') {
+            Edit
+          }
+
+          @if (mode === 'delete') {
+            Delete
+          }
+
+        </h1>
+
+        <p class="mt-1 text-sm text-gray-500">
+          Create a dynamic form without writing code.
+        </p>
+
+      </div>
+
+      <div class="flex gap-3">
+
+        @if (mode !== 'create') {
+
+          <button
+            type="button"
+            (click)="createMode()"
+            class="rounded-lg border border-blue-600 px-4 py-2.5 text-sm font-medium text-blue-600 hover:bg-blue-50"
+          >
+            Create
+          </button>
+
+        }
+
+        @if (mode !== 'edit') {
+
+          <button
+            type="button"
+            (click)="editMode()"
+            class="rounded-lg border border-blue-600 px-4 py-2.5 text-sm font-medium text-blue-600 hover:bg-blue-50"
+          >
+            Edit
+          </button>
+
+        }
+
+        @if (mode !== 'delete') {
+
+          <button
+            type="button"
+            (click)="deleteMode()"
+            class="rounded-lg border border-red-600 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50"
+          >
+            Delete
+          </button>
+
+        }
 
       </div>
 
     </div>
 
 
-    <!-- ===================================================== -->
-    <!-- FIELD BUILDER -->
-    <!-- ===================================================== -->
+    <!-- =====================================================
+         FORM DETAILS
+         ===================================================== -->
 
-    <div class="space-y-5">
+    <div class="mb-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
 
-      @for (field of form.fields; track $index; let i = $index) {
+      @if (mode === 'edit' || mode === 'delete') {
 
-        <!-- ================================================= -->
-        <!-- FIELD ACCORDION -->
-        <!-- ================================================= -->
+        <div class="mb-5">
 
-        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-
-
-          <!-- ================================================= -->
-          <!-- FIELD HEADER -->
-          <!-- ================================================= -->
-
-          <div
-            class="flex cursor-pointer items-center justify-between px-6 py-4 hover:bg-gray-50"
-            (click)="toggleField(i)"
+          <label
+            for="formId"
+            class="mb-2 block text-sm font-medium text-gray-700"
           >
+            Form ID
+          </label>
 
-            <div>
+          <input
+            id="formId"
+            type="text"
+            [(ngModel)]="form.id"
+            (blur)="onFormIdBlur()"
+            placeholder="Enter form ID"
+            class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          />
 
-              <h2 class="text-base font-semibold text-gray-900">
-                Field {{ i + 1 }}
-              </h2>
+        </div>
 
-              <p class="text-xs text-gray-500">
-                Configure this field
-              </p>
+      }
 
-            </div>
+      <label
+        for="formName"
+        class="mb-2 block text-sm font-medium text-gray-700"
+      >
+        Form Name
+      </label>
 
+      <input
+        id="formName"
+        type="text"
+        [(ngModel)]="form.name"
+        placeholder="Enter form name"
+        class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+      />
 
-            <div class="flex items-center gap-3">
-
-              <!-- DELETE -->
-
-              <button
-                type="button"
-                (click)="$event.stopPropagation(); removeField(i)"
-                class="rounded-lg px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50"
-              >
-                <i class="fa-solid fa-trash"></i>
-              </button>
+    </div>
 
 
-              <!-- ACCORDION ARROW -->
+    <!-- =====================================================
+         SECTIONS
+         ===================================================== -->
 
-              <i
-                class="fa-solid"
-                [class.fa-chevron-down]="openFieldIndex === i"
-                [class.fa-chevron-right]="openFieldIndex !== i"
-              ></i>
+    @if (form.sections.length > 0) {
 
-            </div>
+      <div class="mb-6">
+
+        <div class="mb-4 flex items-center justify-between">
+
+          <div>
+
+            <h2 class="text-lg font-semibold text-gray-900">
+              Form Sections
+            </h2>
+
+            <p class="text-sm text-gray-500">
+              Optional sections for large or multi-part forms.
+            </p>
 
           </div>
 
+          <button
+            type="button"
+            (click)="addSection()"
+            class="rounded-lg border border-blue-600 px-4 py-2.5 text-sm font-medium text-blue-600 hover:bg-blue-50"
+          >
+            + Add Section
+          </button>
 
-          <!-- ================================================= -->
-          <!-- FIELD CONTENT -->
-          <!-- ================================================= -->
-
-          @if (openFieldIndex === i) {
-
-            <div class="border-t border-gray-200 p-6">
+        </div>
 
 
-              <!-- ================================================= -->
-              <!-- NORMAL FIELD CONFIGURATION -->
-              <!-- ================================================= -->
+        @for (
+          section of form.sections;
+          track section.id;
+          let sectionIndex = $index
+        ) {
 
-              @if (field.type !== 'table') {
+          <div class="mb-5 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+
+            <!-- SECTION HEADER -->
+
+            <div
+              class="flex cursor-pointer items-center justify-between px-6 py-4 hover:bg-gray-50"
+              (click)="toggleSection(sectionIndex)"
+            >
+
+              <div>
+
+                <h3 class="font-semibold text-gray-900">
+                  {{ section.label || section.name || 'Untitled Section' }}
+                </h3>
+
+                <p class="text-xs text-gray-500">
+                  {{ section.description || 'Configure section' }}
+                </p>
+
+              </div>
+
+              <div class="flex items-center gap-3">
+
+                <button
+                  type="button"
+                  (click)="$event.stopPropagation(); removeSection(sectionIndex)"
+                  class="rounded-lg px-3 py-1.5 text-sm text-red-600 hover:bg-red-50"
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+
+                <i
+                  class="fa-solid"
+                  [class.fa-chevron-down]="openSectionIndex === sectionIndex"
+                  [class.fa-chevron-right]="openSectionIndex !== sectionIndex"
+                ></i>
+
+              </div>
+
+            </div>
+
+
+            <!-- SECTION CONTENT -->
+
+            @if (openSectionIndex === sectionIndex) {
+
+              <div class="border-t border-gray-200 p-6">
 
                 <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
 
-
-                  <!-- FIELD NAME -->
-
                   <div>
 
                     <label class="mb-2 block text-sm font-medium text-gray-700">
-                      Field Name
+                      Section Name
                     </label>
 
                     <input
                       type="text"
-                      [(ngModel)]="field.name"
-                      placeholder="e.g. firstName"
+                      [(ngModel)]="section.name"
+                      placeholder="e.g. personalDetails"
                       class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                     />
 
                   </div>
 
-
-                  <!-- FIELD LABEL -->
-
                   <div>
 
                     <label class="mb-2 block text-sm font-medium text-gray-700">
-                      Field Label
+                      Section Label
                     </label>
 
                     <input
                       type="text"
-                      [(ngModel)]="field.label"
-                      placeholder="e.g. First Name"
+                      [(ngModel)]="section.label"
+                      placeholder="e.g. Personal Details"
                       class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                     />
 
                   </div>
 
+                </div>
 
-                  <!-- FIELD TYPE -->
+                <div class="mt-5">
 
-                  <div>
+                  <label class="mb-2 block text-sm font-medium text-gray-700">
+                    Description
+                  </label>
 
-                    <label class="mb-2 block text-sm font-medium text-gray-700">
-                      Field Type
-                    </label>
-
-                    <select
-                      [(ngModel)]="field.type"
-                      class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                    >
-
-                      <option value="text">Text</option>
-                      <option value="number">Number</option>
-                      <option value="email">Email</option>
-                      <option value="password">Password</option>
-                      <option value="textarea">Textarea</option>
-                      <option value="select">Select</option>
-                      <option value="radio">Radio</option>
-                      <option value="checkbox">Checkbox</option>
-                      <option value="date">Date</option>
-                      <option value="file">File</option>
-                      <option value="button">Button</option>
-
-                    </select>
-
-                  </div>
-
-
-                  <!-- PLACEHOLDER -->
-
-                  @if (
-                    field.type === 'text' ||
-                    field.type === 'number' ||
-                    field.type === 'email' ||
-                    field.type === 'password' ||
-                    field.type === 'textarea'
-                  ) {
-
-                    <div>
-
-                      <label class="mb-2 block text-sm font-medium text-gray-700">
-                        Placeholder
-                      </label>
-
-                      <input
-                        type="text"
-                        [(ngModel)]="field.placeholder"
-                        placeholder="Enter placeholder text"
-                        class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                      />
-
-                    </div>
-
-                  }
-
-
-                  <!-- DEFAULT VALUE -->
-
-                  @if (
-                    field.type !== 'file' &&
-                    field.type !== 'checkbox' &&
-                    field.type !== 'button'
-                  ) {
-
-                    <div>
-
-                      <label class="mb-2 block text-sm font-medium text-gray-700">
-                        Default Value
-                      </label>
-
-                      <input
-                        type="text"
-                        [(ngModel)]="field.defaultValue"
-                        placeholder="Optional default value"
-                        class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                      />
-
-                    </div>
-
-                  }
-
-
-                  <!-- ================================================= -->
-                  <!-- DATE FORMAT -->
-                  <!-- ================================================= -->
-
-                  @if (field.type === 'date') {
-
-                    <div>
-
-                      <label class="mb-2 block text-sm font-medium text-gray-700">
-                        Date Format
-                      </label>
-
-                      <select
-                        [(ngModel)]="field.dateFormat"
-                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                      >
-
-                        <option value="MM/DD/YYYY">
-                          MM/DD/YYYY
-                        </option>
-
-                        <option value="DD/MM/YYYY">
-                          DD/MM/YYYY
-                        </option>
-
-                        <option value="YYYY/MM/DD">
-                          YYYY/MM/DD
-                        </option>
-
-                        <option value="YYYY-MM-DD">
-                          YYYY-MM-DD
-                        </option>
-
-                        <option value="DD-MM-YYYY">
-                          DD-MM-YYYY
-                        </option>
-
-                        <option value="MM-DD-YYYY">
-                          MM-DD-YYYY
-                        </option>
-
-                      </select>
-
-                    </div>
-
-                  }
+                  <input
+                    type="text"
+                    [(ngModel)]="section.description"
+                    placeholder="Optional section description"
+                    class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  />
 
                 </div>
 
+              </div>
 
-                <!-- ================================================= -->
-                <!-- FIELD BEHAVIOR -->
-                <!-- ================================================= -->
+            }
 
-                <div class="mt-6 rounded-lg bg-gray-50 p-4">
+          </div>
 
-                  <h3 class="mb-4 text-sm font-semibold text-gray-800">
-                    Field Behavior
-                  </h3>
+        }
 
-                  <div class="grid grid-cols-1 gap-5 md:grid-cols-4">
+      </div>
 
+    }
 
-                    <!-- REQUIRED -->
 
-                    <div>
+    <!-- =====================================================
+         UNSECTIONED FIELDS
+         ===================================================== -->
 
-                      <label class="mb-2 block text-sm font-medium text-gray-700">
-                        Required
-                      </label>
+    @if (getUnsectionedFields().length > 0) {
 
-                      <div class="flex gap-5">
+      <div class="mb-5">
 
-                        <label class="flex items-center gap-2 text-sm">
+        @if (form.sections.length > 0) {
 
-                          <input
-                            type="radio"
-                            [name]="'required-' + i"
-                            [value]="true"
-                            [(ngModel)]="field.validation.required"
-                          />
+          <div class="mb-4">
 
-                          Yes
+            <h2 class="text-lg font-semibold text-gray-900">
+              General Fields
+            </h2>
 
-                        </label>
+            <p class="text-sm text-gray-500">
+              Fields that are not assigned to a section.
+            </p>
 
-                        <label class="flex items-center gap-2 text-sm">
+          </div>
 
-                          <input
-                            type="radio"
-                            [name]="'required-' + i"
-                            [value]="false"
-                            [(ngModel)]="field.validation.required"
-                          />
+        }
 
-                          No
+        @for (
+          field of getUnsectionedFields();
+          track $index
+        ) {
 
-                        </label>
-
-                      </div>
-
-                    </div>
-
-
-                    <!-- HIDDEN -->
-
-                    <div>
-
-                      <label class="mb-2 block text-sm font-medium text-gray-700">
-                        Hidden
-                      </label>
-
-                      <div class="flex gap-5">
-
-                        <label class="flex items-center gap-2 text-sm">
-
-                          <input
-                            type="radio"
-                            [name]="'hidden-' + i"
-                            [value]="true"
-                            [(ngModel)]="field.hidden"
-                          />
-
-                          Yes
-
-                        </label>
-
-                        <label class="flex items-center gap-2 text-sm">
-
-                          <input
-                            type="radio"
-                            [name]="'hidden-' + i"
-                            [value]="false"
-                            [(ngModel)]="field.hidden"
-                          />
-
-                          No
-
-                        </label>
-
-                      </div>
-
-                    </div>
-
-
-                    <!-- READ ONLY -->
-
-                    <div>
-
-                      <label class="mb-2 block text-sm font-medium text-gray-700">
-                        Read Only
-                      </label>
-
-                      <div class="flex gap-5">
-
-                        <label class="flex items-center gap-2 text-sm">
-
-                          <input
-                            type="radio"
-                            [name]="'readonly-' + i"
-                            [value]="true"
-                            [(ngModel)]="field.readOnly"
-                          />
-
-                          Yes
-
-                        </label>
-
-                        <label class="flex items-center gap-2 text-sm">
-
-                          <input
-                            type="radio"
-                            [name]="'readonly-' + i"
-                            [value]="false"
-                            [(ngModel)]="field.readOnly"
-                          />
-
-                          No
-
-                        </label>
-
-                      </div>
-
-                    </div>
-
-
-                    <!-- DISABLED -->
-
-                    <div>
-
-                      <label class="mb-2 block text-sm font-medium text-gray-700">
-                        Disabled
-                      </label>
-
-                      <div class="flex gap-5">
-
-                        <label class="flex items-center gap-2 text-sm">
-
-                          <input
-                            type="radio"
-                            [name]="'disabled-' + i"
-                            [value]="true"
-                            [(ngModel)]="field.disabled"
-                          />
-
-                          Yes
-
-                        </label>
-
-                        <label class="flex items-center gap-2 text-sm">
-
-                          <input
-                            type="radio"
-                            [name]="'disabled-' + i"
-                            [value]="false"
-                            [(ngModel)]="field.disabled"
-                          />
-
-                          No
-
-                        </label>
-
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-
-                <!-- ================================================= -->
-                <!-- TEXT VALIDATION -->
-                <!-- ================================================= -->
-
-                @if (
-                  field.type === 'text' ||
-                  field.type === 'password' ||
-                  field.type === 'textarea'
-                ) {
-
-                  <div class="mt-6 rounded-lg bg-gray-50 p-4">
-
-                    <h3 class="mb-4 text-sm font-semibold text-gray-800">
-                      Text Validation
-                    </h3>
-
-                    <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
-
-                      <div>
-
-                        <label class="mb-2 block text-sm font-medium text-gray-700">
-                          Minimum Length
-                        </label>
-
-                        <input
-                          type="number"
-                          [(ngModel)]="field.validation.minLength"
-                          placeholder="e.g. 2"
-                          min="0"
-                          class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                        />
-
-                      </div>
-
-
-                      <div>
-
-                        <label class="mb-2 block text-sm font-medium text-gray-700">
-                          Maximum Length
-                        </label>
-
-                        <input
-                          type="number"
-                          [(ngModel)]="field.validation.maxLength"
-                          placeholder="e.g. 50"
-                          min="0"
-                          class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                        />
-
-                      </div>
-
-                    </div>
-
-
-                    <div class="mt-5">
-
-                      <label class="mb-2 block text-sm font-medium text-gray-700">
-                        Pattern
-                      </label>
-
-                      <select
-                        [(ngModel)]="field.validation.pattern"
-                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                      >
-
-                        <option value="">Any</option>
-
-                        <option value="TEXT_ONLY">
-                          Text Only
-                        </option>
-
-                        <option value="NUMBER_ONLY">
-                          Number Only
-                        </option>
-
-                        <option value="ALPHANUMERIC">
-                          Alphanumeric
-                        </option>
-
-                        <option value="ALPHANUMERIC_SPECIAL">
-                          Alphanumeric + Special Characters
-                        </option>
-
-                        <option value="ALL">
-                          All Characters
-                        </option>
-
-                      </select>
-
-                    </div>
-
-                  </div>
-
-                }
-
-
-                <!-- ================================================= -->
-                <!-- NUMBER VALIDATION -->
-                <!-- ================================================= -->
-
-                @if (field.type === 'number') {
-
-                  <div class="mt-6 rounded-lg bg-gray-50 p-4">
-
-                    <h3 class="mb-4 text-sm font-semibold text-gray-800">
-                      Number Validation
-                    </h3>
-
-                    <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
-
-                      <div>
-
-                        <label class="mb-2 block text-sm font-medium text-gray-700">
-                          Minimum Value
-                        </label>
-
-                        <input
-                          type="number"
-                          [(ngModel)]="field.validation.min"
-                          placeholder="e.g. 0"
-                          class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                        />
-
-                      </div>
-
-
-                      <div>
-
-                        <label class="mb-2 block text-sm font-medium text-gray-700">
-                          Maximum Value
-                        </label>
-
-                        <input
-                          type="number"
-                          [(ngModel)]="field.validation.max"
-                          placeholder="e.g. 100"
-                          class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                        />
-
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                }
-
-
-                <!-- ================================================= -->
-                <!-- EMAIL VALIDATION -->
-                <!-- ================================================= -->
-
-                @if (field.type === 'email') {
-
-                  <div class="mt-6 rounded-lg bg-gray-50 p-4">
-
-                    <h3 class="mb-4 text-sm font-semibold text-gray-800">
-                      Email Validation
-                    </h3>
-
-                    <p class="text-sm text-gray-500">
-                      The field will use standard email format validation.
-                    </p>
-
-                  </div>
-
-                }
-
-
-                <!-- ================================================= -->
-                <!-- SELECT / RADIO OPTIONS -->
-                <!-- ================================================= -->
-
-                @if (
-                  field.type === 'select' ||
-                  field.type === 'radio'
-                ) {
-
-                  <div class="mt-6 rounded-lg bg-gray-50 p-4">
-
-                    <h3 class="mb-4 text-sm font-semibold text-gray-800">
-                      Options
-                    </h3>
-
-                    @for (
-                      option of field.options;
-                      track $index;
-                      let optionIndex = $index
-                    ) {
-
-                      <div class="mb-3 flex gap-3">
-
-                        <input
-                          type="text"
-                          [(ngModel)]="option.label"
-                          placeholder="Label"
-                          class="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                        />
-
-                        <input
-                          type="text"
-                          [(ngModel)]="option.value"
-                          placeholder="Value"
-                          class="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                        />
-
-                        <button
-                          type="button"
-                          (click)="removeOption(field, optionIndex)"
-                          class="rounded-lg px-3 text-sm text-red-600 hover:bg-red-50"
-                        >
-                          <i class="fa-solid fa-trash"></i>
-                        </button>
-
-                      </div>
-
-                    }
-
-                    <button
-                      type="button"
-                      (click)="addOption(field)"
-                      class="mt-2 text-sm font-medium text-blue-600 hover:text-blue-700"
-                    >
-                      + Add Option
-                    </button>
-
-                  </div>
-
-                }
-
+          <ng-container
+            *ngTemplateOutlet="
+              fieldTemplate;
+              context: {
+                field: field,
+                i: getFieldIndex(field)
               }
+            "
+          ></ng-container>
 
+        }
 
-              <!-- ================================================= -->
-              <!-- DYNAMIC TABLE CONFIGURATION -->
-              <!-- ================================================= -->
+      </div>
 
-              @if (field.type === 'table') {
+    }
 
-                <div class="rounded-lg bg-blue-50 p-5">
 
-                  <div class="mb-5">
+    <!-- =====================================================
+         SECTION FIELDS
+         ===================================================== -->
 
-                    <h3 class="text-sm font-semibold text-gray-800">
-                      Dynamic Table Configuration
-                    </h3>
+    @for (
+      section of form.sections;
+      track section.id
+    ) {
 
-                    <p class="mt-1 text-xs text-gray-500">
-                      Configure the columns that will be available in each dynamic row.
-                    </p>
+      @if (getSectionFields(section.id).length > 0) {
 
-                  </div>
+        <div class="mb-6">
 
+          <div class="mb-4">
 
-                  <!-- TABLE NAME -->
+            <h2 class="text-lg font-semibold text-gray-900">
+              {{ section.label || section.name || 'Section' }}
+            </h2>
 
-                  <div class="mb-5">
+            <p class="text-sm text-gray-500">
+              Fields belonging to this section.
+            </p>
 
-                    <label class="mb-2 block text-sm font-medium text-gray-700">
-                      Table Name
-                    </label>
+          </div>
 
-                    <input
-                      type="text"
-                      [(ngModel)]="field.table!.name"
-                      placeholder="e.g. nominees"
-                      class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                    />
+          @for (
+            field of getSectionFields(section.id);
+            track $index
+          ) {
 
-                  </div>
-
-
-                  <!-- TABLE DESCRIPTION -->
-
-                  <div class="mb-5">
-
-                    <label class="mb-2 block text-sm font-medium text-gray-700">
-                      Description
-                    </label>
-
-                    <input
-                      type="text"
-                      [(ngModel)]="field.table!.description"
-                      placeholder="e.g. Add nominee details"
-                      class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                    />
-
-                  </div>
-
-
-                  <!-- TABLE COLUMNS -->
-
-                  <div class="space-y-4">
-
-                    @for (
-                      column of field.table!.columns;
-                      track $index;
-                      let columnIndex = $index
-                    ) {
-
-                      <div class="rounded-lg border border-gray-200 bg-white p-5">
-
-
-                        <div class="mb-4 flex items-center justify-between">
-
-                          <div>
-
-                            <h4 class="text-sm font-semibold text-gray-800">
-                              Column {{ columnIndex + 1 }}
-                            </h4>
-
-                            <p class="text-xs text-gray-500">
-                              Configure this table column
-                            </p>
-
-                          </div>
-
-                          <button
-                            type="button"
-                            (click)="removeTableColumn(field, columnIndex)"
-                            class="rounded-lg px-3 py-1.5 text-sm text-red-600 hover:bg-red-50"
-                          >
-                            <i class="fa-solid fa-trash"></i>
-                          </button>
-
-                        </div>
-
-
-                        <!-- COLUMN BASIC -->
-
-                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-
-
-                          <!-- COLUMN NAME -->
-
-                          <div>
-
-                            <label class="mb-2 block text-sm font-medium text-gray-700">
-                              Column Name
-                            </label>
-
-                            <input
-                              type="text"
-                              [(ngModel)]="column.name"
-                              placeholder="e.g. nomineeName"
-                              class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                            />
-
-                          </div>
-
-
-                          <!-- COLUMN LABEL -->
-
-                          <div>
-
-                            <label class="mb-2 block text-sm font-medium text-gray-700">
-                              Column Label
-                            </label>
-
-                            <input
-                              type="text"
-                              [(ngModel)]="column.label"
-                              placeholder="e.g. Nominee Name"
-                              class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                            />
-
-                          </div>
-
-
-                          <!-- COLUMN TYPE -->
-
-                          <div>
-
-                            <label class="mb-2 block text-sm font-medium text-gray-700">
-                              Field Type
-                            </label>
-
-                            <select
-                              [(ngModel)]="column.type"
-                              class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                            >
-
-                              <option value="text">Text</option>
-                              <option value="number">Number</option>
-                              <option value="email">Email</option>
-                              <option value="password">Password</option>
-                              <option value="textarea">Textarea</option>
-                              <option value="select">Select</option>
-                              <option value="radio">Radio</option>
-                              <option value="checkbox">Checkbox</option>
-                              <option value="date">Date</option>
-                              <option value="file">File</option>
-
-                            </select>
-
-                          </div>
-
-
-                          <!-- COLUMN PLACEHOLDER -->
-
-                          @if (
-                            column.type === 'text' ||
-                            column.type === 'number' ||
-                            column.type === 'email' ||
-                            column.type === 'password' ||
-                            column.type === 'textarea'
-                          ) {
-
-                            <div>
-
-                              <label class="mb-2 block text-sm font-medium text-gray-700">
-                                Placeholder
-                              </label>
-
-                              <input
-                                type="text"
-                                [(ngModel)]="column.placeholder"
-                                placeholder="Enter placeholder"
-                                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                              />
-
-                            </div>
-
-                          }
-
-
-                          <!-- COLUMN DEFAULT VALUE -->
-
-                          @if (
-                            column.type !== 'file' &&
-                            column.type !== 'checkbox'
-                          ) {
-
-                            <div>
-
-                              <label class="mb-2 block text-sm font-medium text-gray-700">
-                                Default Value
-                              </label>
-
-                              <input
-                                type="text"
-                                [(ngModel)]="column.defaultValue"
-                                placeholder="Optional default value"
-                                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                              />
-
-                            </div>
-
-                          }
-
-
-                          <!-- ================================================= -->
-                          <!-- COLUMN DATE FORMAT -->
-                          <!-- ================================================= -->
-
-                          @if (column.type === 'date') {
-
-                            <div>
-
-                              <label class="mb-2 block text-sm font-medium text-gray-700">
-                                Date Format
-                              </label>
-
-                              <select
-                                [(ngModel)]="column.dateFormat"
-                                class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                              >
-
-                                <option value="MM/DD/YYYY">
-                                  MM/DD/YYYY
-                                </option>
-
-                                <option value="DD/MM/YYYY">
-                                  DD/MM/YYYY
-                                </option>
-
-                                <option value="YYYY/MM/DD">
-                                  YYYY/MM/DD
-                                </option>
-
-                                <option value="YYYY-MM-DD">
-                                  YYYY-MM-DD
-                                </option>
-
-                                <option value="DD-MM-YYYY">
-                                  DD-MM-YYYY
-                                </option>
-
-                                <option value="MM-DD-YYYY">
-                                  MM-DD-YYYY
-                                </option>
-
-                              </select>
-
-                            </div>
-
-                          }
-
-                        </div>
-
-
-                        <!-- COLUMN BEHAVIOR -->
-
-                        <div class="mt-5 rounded-lg bg-gray-50 p-4">
-
-                          <h5 class="mb-4 text-sm font-semibold text-gray-800">
-                            Column Behavior
-                          </h5>
-
-                          <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-
-
-                            <!-- REQUIRED -->
-
-                            <div>
-
-                              <label class="mb-2 block text-sm font-medium text-gray-700">
-                                Required
-                              </label>
-
-                              <div class="flex gap-4">
-
-                                <label class="flex items-center gap-2 text-sm">
-
-                                  <input
-                                    type="radio"
-                                    [name]="'column-required-' + i + '-' + columnIndex"
-                                    [value]="true"
-                                    [(ngModel)]="column.validation.required"
-                                  />
-
-                                  Yes
-
-                                </label>
-
-                                <label class="flex items-center gap-2 text-sm">
-
-                                  <input
-                                    type="radio"
-                                    [name]="'column-required-' + i + '-' + columnIndex"
-                                    [value]="false"
-                                    [(ngModel)]="column.validation.required"
-                                  />
-
-                                  No
-
-                                </label>
-
-                              </div>
-
-                            </div>
-
-
-                            <!-- HIDDEN -->
-
-                            <div>
-
-                              <label class="mb-2 block text-sm font-medium text-gray-700">
-                                Hidden
-                              </label>
-
-                              <div class="flex gap-4">
-
-                                <label class="flex items-center gap-2 text-sm">
-
-                                  <input
-                                    type="radio"
-                                    [name]="'column-hidden-' + i + '-' + columnIndex"
-                                    [value]="true"
-                                    [(ngModel)]="column.hidden"
-                                  />
-
-                                  Yes
-
-                                </label>
-
-                                <label class="flex items-center gap-2 text-sm">
-
-                                  <input
-                                    type="radio"
-                                    [name]="'column-hidden-' + i + '-' + columnIndex"
-                                    [value]="false"
-                                    [(ngModel)]="column.hidden"
-                                  />
-
-                                  No
-
-                                </label>
-
-                              </div>
-
-                            </div>
-
-
-                            <!-- READ ONLY -->
-
-                            <div>
-
-                              <label class="mb-2 block text-sm font-medium text-gray-700">
-                                Read Only
-                              </label>
-
-                              <div class="flex gap-4">
-
-                                <label class="flex items-center gap-2 text-sm">
-
-                                  <input
-                                    type="radio"
-                                    [name]="'column-readonly-' + i + '-' + columnIndex"
-                                    [value]="true"
-                                    [(ngModel)]="column.readOnly"
-                                  />
-
-                                  Yes
-
-                                </label>
-
-                                <label class="flex items-center gap-2 text-sm">
-
-                                  <input
-                                    type="radio"
-                                    [name]="'column-readonly-' + i + '-' + columnIndex"
-                                    [value]="false"
-                                    [(ngModel)]="column.readOnly"
-                                  />
-
-                                  No
-
-                                </label>
-
-                              </div>
-
-                            </div>
-
-                          </div>
-
-                        </div>
-
-
-                        <!-- COLUMN TEXT VALIDATION -->
-
-                        @if (
-                          column.type === 'text' ||
-                          column.type === 'password' ||
-                          column.type === 'textarea'
-                        ) {
-
-                          <div class="mt-5 rounded-lg bg-gray-50 p-4">
-
-                            <h5 class="mb-4 text-sm font-semibold text-gray-800">
-                              Text Validation
-                            </h5>
-
-                            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-
-
-                              <div>
-
-                                <label class="mb-2 block text-sm font-medium text-gray-700">
-                                  Minimum Length
-                                </label>
-
-                                <input
-                                  type="number"
-                                  min="0"
-                                  [(ngModel)]="column.validation.minLength"
-                                  class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none"
-                                />
-
-                              </div>
-
-
-                              <div>
-
-                                <label class="mb-2 block text-sm font-medium text-gray-700">
-                                  Maximum Length
-                                </label>
-
-                                <input
-                                  type="number"
-                                  min="0"
-                                  [(ngModel)]="column.validation.maxLength"
-                                  class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none"
-                                />
-
-                              </div>
-
-                            </div>
-
-
-                            <div class="mt-4">
-
-                              <label class="mb-2 block text-sm font-medium text-gray-700">
-                                Pattern
-                              </label>
-
-                              <select
-                                [(ngModel)]="column.validation.pattern"
-                                class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm outline-none"
-                              >
-
-                                <option value="">Any</option>
-
-                                <option value="TEXT_ONLY">
-                                  Text Only
-                                </option>
-
-                                <option value="NUMBER_ONLY">
-                                  Number Only
-                                </option>
-
-                                <option value="ALPHANUMERIC">
-                                  Alphanumeric
-                                </option>
-
-                                <option value="ALPHANUMERIC_SPECIAL">
-                                  Alphanumeric + Special Characters
-                                </option>
-
-                                <option value="ALL">
-                                  All Characters
-                                </option>
-
-                              </select>
-
-                            </div>
-
-                          </div>
-
-                        }
-
-
-                        <!-- COLUMN NUMBER VALIDATION -->
-
-                        @if (column.type === 'number') {
-
-                          <div class="mt-5 rounded-lg bg-gray-50 p-4">
-
-                            <h5 class="mb-4 text-sm font-semibold text-gray-800">
-                              Number Validation
-                            </h5>
-
-                            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-
-
-                              <div>
-
-                                <label class="mb-2 block text-sm font-medium text-gray-700">
-                                  Minimum Value
-                                </label>
-
-                                <input
-                                  type="number"
-                                  [(ngModel)]="column.validation.min"
-                                  class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none"
-                                />
-
-                              </div>
-
-
-                              <div>
-
-                                <label class="mb-2 block text-sm font-medium text-gray-700">
-                                  Maximum Value
-                                </label>
-
-                                <input
-                                  type="number"
-                                  [(ngModel)]="column.validation.max"
-                                  class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none"
-                                />
-
-                              </div>
-
-                            </div>
-
-                          </div>
-
-                        }
-
-
-                        <!-- COLUMN SELECT / RADIO OPTIONS -->
-
-                        @if (
-                          column.type === 'select' ||
-                          column.type === 'radio'
-                        ) {
-
-                          <div class="mt-5 rounded-lg bg-gray-50 p-4">
-
-                            <h5 class="mb-4 text-sm font-semibold text-gray-800">
-                              Options
-                            </h5>
-
-                            @for (
-                              option of column.options;
-                              track $index;
-                              let optionIndex = $index
-                            ) {
-
-                              <div class="mb-3 flex gap-3">
-
-                                <input
-                                  type="text"
-                                  [(ngModel)]="option.label"
-                                  placeholder="Label"
-                                  class="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none"
-                                />
-
-                                <input
-                                  type="text"
-                                  [(ngModel)]="option.value"
-                                  placeholder="Value"
-                                  class="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none"
-                                />
-
-                                <button
-                                  type="button"
-                                  (click)="removeTableColumnOption(column, optionIndex)"
-                                  class="rounded-lg px-3 text-sm text-red-600 hover:bg-red-50"
-                                >
-                                  <i class="fa-solid fa-trash"></i>
-                                </button>
-
-                              </div>
-
-                            }
-
-                            <button
-                              type="button"
-                              (click)="addTableColumnOption(column)"
-                              class="mt-2 text-sm font-medium text-blue-600"
-                            >
-                              + Add Option
-                            </button>
-
-                          </div>
-
-                        }
-
-                      </div>
-
-                    }
-
-                  </div>
-
-
-                  <!-- ADD COLUMN -->
-
-                  <div class="mt-5">
-
-                    <button
-                      type="button"
-                      (click)="addTableColumn(field)"
-                      class="rounded-lg border border-blue-600 px-4 py-2.5 text-sm font-medium text-blue-600 hover:bg-blue-50"
-                    >
-                      + Add Column
-                    </button>
-
-                  </div>
-
-                </div>
-
-              }
-
-            </div>
+            <ng-container
+              *ngTemplateOutlet="
+                fieldTemplate;
+                context: {
+                  field: field,
+                  i: getFieldIndex(field)
+                }
+              "
+            ></ng-container>
 
           }
 
@@ -1353,19 +366,1194 @@
 
       }
 
-    </div>
+    }
 
 
-    <!-- ===================================================== -->
-    <!-- ADD FIELD / TABLE -->
-    <!-- ===================================================== -->
+    <!-- =====================================================
+         FIELD TEMPLATE
+         ===================================================== -->
 
-    <div class="mt-6 flex justify-center gap-3">
+    <ng-template
+      #fieldTemplate
+      let-field="field"
+      let-i="i"
+    >
+
+      <div class="mb-5 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+
+        <!-- FIELD HEADER -->
+
+        <div
+          class="flex cursor-pointer items-center justify-between px-6 py-4 hover:bg-gray-50"
+          (click)="toggleField(i)"
+        >
+
+          <div>
+
+            <h2 class="text-base font-semibold text-gray-900">
+
+              @if (field.type === 'table') {
+                {{ field.table?.name || 'Dynamic Table' }}
+              }
+
+              @else {
+                {{ field.label || field.name || 'Untitled Field' }}
+              }
+
+            </h2>
+
+            <p class="text-xs text-gray-500">
+              {{ field.type }}
+            </p>
+
+          </div>
+
+          <div class="flex items-center gap-3">
+
+            <button
+              type="button"
+              (click)="$event.stopPropagation(); removeField(i)"
+              class="rounded-lg px-3 py-1.5 text-sm text-red-600 hover:bg-red-50"
+            >
+              <i class="fa-solid fa-trash"></i>
+            </button>
+
+            <i
+              class="fa-solid"
+              [class.fa-chevron-down]="openFieldIndex === i"
+              [class.fa-chevron-right]="openFieldIndex !== i"
+            ></i>
+
+          </div>
+
+        </div>
+
+
+        <!-- FIELD CONTENT -->
+
+        @if (openFieldIndex === i) {
+
+          <div class="border-t border-gray-200 p-6">
+
+            <!-- =================================================
+                 NORMAL FIELD
+                 ================================================= -->
+
+            @if (field.type !== 'table') {
+
+              <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+
+                <!-- NAME -->
+
+                <div>
+
+                  <label class="mb-2 block text-sm font-medium text-gray-700">
+                    Field Name
+                  </label>
+
+                  <input
+                    type="text"
+                    [(ngModel)]="field.name"
+                    placeholder="e.g. firstName"
+                    class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  />
+
+                </div>
+
+
+                <!-- LABEL -->
+
+                <div>
+
+                  <label class="mb-2 block text-sm font-medium text-gray-700">
+                    Field Label
+                  </label>
+
+                  <input
+                    type="text"
+                    [(ngModel)]="field.label"
+                    placeholder="e.g. First Name"
+                    class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  />
+
+                </div>
+
+
+                <!-- TYPE -->
+
+                <div>
+
+                  <label class="mb-2 block text-sm font-medium text-gray-700">
+                    Field Type
+                  </label>
+
+                  <select
+                    [(ngModel)]="field.type"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm"
+                  >
+
+                    <option value="text">Text</option>
+                    <option value="number">Number</option>
+                    <option value="email">Email</option>
+                    <option value="password">Password</option>
+                    <option value="textarea">Textarea</option>
+                    <option value="select">Select</option>
+                    <option value="radio">Radio</option>
+                    <option value="checkbox">Checkbox</option>
+                    <option value="date">Date</option>
+                    <option value="file">File</option>
+                    <option value="button">Button</option>
+
+                  </select>
+
+                </div>
+
+
+                <!-- SECTION -->
+
+                @if (form.sections.length > 0) {
+
+                  <div>
+
+                    <label class="mb-2 block text-sm font-medium text-gray-700">
+                      Section
+                    </label>
+
+                    <select
+                      [(ngModel)]="field.sectionId"
+                      class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm"
+                    >
+
+                      <option [ngValue]="null">
+                        General / No Section
+                      </option>
+
+                      @for (
+                        section of form.sections;
+                        track section.id
+                      ) {
+
+                        <option [ngValue]="section.id">
+                          {{ section.label || section.name || 'Untitled Section' }}
+                        </option>
+
+                      }
+
+                    </select>
+
+                  </div>
+
+                }
+
+
+                <!-- PLACEHOLDER -->
+
+                @if (
+                  field.type === 'text' ||
+                  field.type === 'number' ||
+                  field.type === 'email' ||
+                  field.type === 'password' ||
+                  field.type === 'textarea'
+                ) {
+
+                  <div>
+
+                    <label class="mb-2 block text-sm font-medium text-gray-700">
+                      Placeholder
+                    </label>
+
+                    <input
+                      type="text"
+                      [(ngModel)]="field.placeholder"
+                      placeholder="Enter placeholder text"
+                      class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm"
+                    />
+
+                  </div>
+
+                }
+
+
+                <!-- DEFAULT VALUE -->
+
+                @if (
+                  field.type !== 'file' &&
+                  field.type !== 'checkbox' &&
+                  field.type !== 'button'
+                ) {
+
+                  <div>
+
+                    <label class="mb-2 block text-sm font-medium text-gray-700">
+                      Default Value
+                    </label>
+
+                    <input
+                      type="text"
+                      [(ngModel)]="field.defaultValue"
+                      placeholder="Optional default value"
+                      class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm"
+                    />
+
+                  </div>
+
+                }
+
+
+                <!-- DATE FORMAT -->
+
+                @if (field.type === 'date') {
+
+                  <div>
+
+                    <label class="mb-2 block text-sm font-medium text-gray-700">
+                      Date Format
+                    </label>
+
+                    <select
+                      [(ngModel)]="field.dateFormat"
+                      class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm"
+                    >
+
+                      <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                      <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                      <option value="YYYY/MM/DD">YYYY/MM/DD</option>
+                      <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                      <option value="DD-MM-YYYY">DD-MM-YYYY</option>
+                      <option value="MM-DD-YYYY">MM-DD-YYYY</option>
+
+                    </select>
+
+                  </div>
+
+                }
+
+              </div>
+
+
+              <!-- =================================================
+                   FIELD BEHAVIOR
+                   ================================================= -->
+
+              <div class="mt-6 rounded-lg bg-gray-50 p-4">
+
+                <h3 class="mb-4 text-sm font-semibold text-gray-800">
+                  Field Behavior
+                </h3>
+
+                <div class="grid grid-cols-1 gap-5 md:grid-cols-4">
+
+                  @for (
+                    behavior of behaviors;
+                    track behavior.key
+                  ) {
+
+                    <div>
+
+                      <label class="mb-2 block text-sm font-medium text-gray-700">
+                        {{ behavior.label }}
+                      </label>
+
+                      <div class="flex gap-5">
+
+                        <label class="flex items-center gap-2 text-sm">
+
+                          <input
+                            type="radio"
+                            [name]="behavior.key + '-' + i"
+                            [value]="true"
+                            [ngModel]="getBehaviorValue(field, behavior.key)"
+                            (ngModelChange)="setBehaviorValue(field, behavior.key, $event)"
+                          />
+
+                          Yes
+
+                        </label>
+
+                        <label class="flex items-center gap-2 text-sm">
+
+                          <input
+                            type="radio"
+                            [name]="behavior.key + '-' + i"
+                            [value]="false"
+                            [ngModel]="getBehaviorValue(field, behavior.key)"
+                            (ngModelChange)="setBehaviorValue(field, behavior.key, $event)"
+                          />
+
+                          No
+
+                        </label>
+
+                      </div>
+
+                    </div>
+
+                  }
+
+                </div>
+
+              </div>
+
+
+              <!-- =================================================
+                   TEXT VALIDATION
+                   ================================================= -->
+
+              @if (
+                field.type === 'text' ||
+                field.type === 'password' ||
+                field.type === 'textarea'
+              ) {
+
+                <div class="mt-6 rounded-lg bg-gray-50 p-4">
+
+                  <h3 class="mb-4 text-sm font-semibold text-gray-800">
+                    Text Validation
+                  </h3>
+
+                  <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+
+                    <div>
+
+                      <label class="mb-2 block text-sm font-medium text-gray-700">
+                        Minimum Length
+                      </label>
+
+                      <input
+                        type="number"
+                        min="0"
+                        [(ngModel)]="field.validation.minLength"
+                        class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm"
+                      />
+
+                    </div>
+
+                    <div>
+
+                      <label class="mb-2 block text-sm font-medium text-gray-700">
+                        Maximum Length
+                      </label>
+
+                      <input
+                        type="number"
+                        min="0"
+                        [(ngModel)]="field.validation.maxLength"
+                        class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm"
+                      />
+
+                    </div>
+
+                  </div>
+
+                  <div class="mt-5">
+
+                    <label class="mb-2 block text-sm font-medium text-gray-700">
+                      Pattern
+                    </label>
+
+                    <select
+                      [(ngModel)]="field.validation.pattern"
+                      class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm"
+                    >
+
+                      <option value="">Any</option>
+                      <option value="TEXT_ONLY">Text Only</option>
+                      <option value="NUMBER_ONLY">Number Only</option>
+                      <option value="ALPHANUMERIC">Alphanumeric</option>
+                      <option value="ALPHANUMERIC_SPECIAL">
+                        Alphanumeric + Special Characters
+                      </option>
+                      <option value="ALL">All Characters</option>
+
+                    </select>
+
+                  </div>
+
+                </div>
+
+              }
+
+
+              <!-- =================================================
+                   NUMBER VALIDATION
+                   ================================================= -->
+
+              @if (field.type === 'number') {
+
+                <div class="mt-6 rounded-lg bg-gray-50 p-4">
+
+                  <h3 class="mb-4 text-sm font-semibold text-gray-800">
+                    Number Validation
+                  </h3>
+
+                  <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+
+                    <div>
+
+                      <label class="mb-2 block text-sm font-medium text-gray-700">
+                        Minimum Value
+                      </label>
+
+                      <input
+                        type="number"
+                        [(ngModel)]="field.validation.min"
+                        class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm"
+                      />
+
+                    </div>
+
+                    <div>
+
+                      <label class="mb-2 block text-sm font-medium text-gray-700">
+                        Maximum Value
+                      </label>
+
+                      <input
+                        type="number"
+                        [(ngModel)]="field.validation.max"
+                        class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm"
+                      />
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              }
+
+
+              <!-- =================================================
+                   EMAIL
+                   ================================================= -->
+
+              @if (field.type === 'email') {
+
+                <div class="mt-6 rounded-lg bg-gray-50 p-4">
+
+                  <h3 class="mb-2 text-sm font-semibold text-gray-800">
+                    Email Validation
+                  </h3>
+
+                  <p class="text-sm text-gray-500">
+                    Standard email format validation will be used.
+                  </p>
+
+                </div>
+
+              }
+
+
+              <!-- =================================================
+                   OPTIONS
+                   ================================================= -->
+
+              @if (
+                field.type === 'select' ||
+                field.type === 'radio'
+              ) {
+
+                <div class="mt-6 rounded-lg bg-gray-50 p-4">
+
+                  <h3 class="mb-4 text-sm font-semibold text-gray-800">
+                    Options
+                  </h3>
+
+                  @for (
+                    option of field.options;
+                    track $index;
+                    let optionIndex = $index
+                  ) {
+
+                    <div class="mb-3 flex gap-3">
+
+                      <input
+                        type="text"
+                        [(ngModel)]="option.label"
+                        placeholder="Label"
+                        class="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm"
+                      />
+
+                      <input
+                        type="text"
+                        [(ngModel)]="option.value"
+                        placeholder="Value"
+                        class="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm"
+                      />
+
+                      <button
+                        type="button"
+                        (click)="removeOption(field, optionIndex)"
+                        class="rounded-lg px-3 text-red-600 hover:bg-red-50"
+                      >
+                        <i class="fa-solid fa-trash"></i>
+                      </button>
+
+                    </div>
+
+                  }
+
+                  <button
+                    type="button"
+                    (click)="addOption(field)"
+                    class="mt-2 text-sm font-medium text-blue-600"
+                  >
+                    + Add Option
+                  </button>
+
+                </div>
+
+              }
+
+            }
+
+
+            <!-- =================================================
+                 DYNAMIC TABLE
+                 ================================================= -->
+
+            @if (field.type === 'table') {
+
+              <div class="rounded-lg bg-blue-50 p-5">
+
+                <!-- TABLE SECTION -->
+
+                @if (form.sections.length > 0) {
+
+                  <div class="mb-5">
+
+                    <label class="mb-2 block text-sm font-medium text-gray-700">
+                      Section
+                    </label>
+
+                    <select
+                      [(ngModel)]="field.sectionId"
+                      class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm"
+                    >
+
+                      <option [ngValue]="null">
+                        General / No Section
+                      </option>
+
+                      @for (
+                        section of form.sections;
+                        track section.id
+                      ) {
+
+                        <option [ngValue]="section.id">
+                          {{ section.label || section.name || 'Untitled Section' }}
+                        </option>
+
+                      }
+
+                    </select>
+
+                  </div>
+
+                }
+
+
+                <div class="mb-5">
+
+                  <h3 class="text-sm font-semibold text-gray-800">
+                    Dynamic Table Configuration
+                  </h3>
+
+                  <p class="mt-1 text-xs text-gray-500">
+                    Configure the columns available in each dynamic row.
+                  </p>
+
+                </div>
+
+
+                <!-- TABLE NAME -->
+
+                <div class="mb-5">
+
+                  <label class="mb-2 block text-sm font-medium text-gray-700">
+                    Table Name
+                  </label>
+
+                  <input
+                    type="text"
+                    [(ngModel)]="field.table!.name"
+                    placeholder="e.g. nominees"
+                    class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm"
+                  />
+
+                </div>
+
+
+                <!-- DESCRIPTION -->
+
+                <div class="mb-5">
+
+                  <label class="mb-2 block text-sm font-medium text-gray-700">
+                    Description
+                  </label>
+
+                  <input
+                    type="text"
+                    [(ngModel)]="field.table!.description"
+                    placeholder="e.g. Add nominee details"
+                    class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm"
+                  />
+
+                </div>
+
+
+                <!-- COLUMNS -->
+
+                <div class="space-y-4">
+
+                  @for (
+                    column of field.table!.columns;
+                    track $index;
+                    let columnIndex = $index
+                  ) {
+
+                    <div class="rounded-lg border border-gray-200 bg-white p-5">
+
+                      <div class="mb-4 flex items-center justify-between">
+
+                        <div>
+
+                          <h4 class="text-sm font-semibold text-gray-800">
+                            Column {{ columnIndex + 1 }}
+                          </h4>
+
+                          <p class="text-xs text-gray-500">
+                            Configure this table column
+                          </p>
+
+                        </div>
+
+                        <button
+                          type="button"
+                          (click)="removeTableColumn(field, columnIndex)"
+                          class="rounded-lg px-3 py-1.5 text-red-600 hover:bg-red-50"
+                        >
+                          <i class="fa-solid fa-trash"></i>
+                        </button>
+
+                      </div>
+
+
+                      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+
+                        <!-- COLUMN NAME -->
+
+                        <div>
+
+                          <label class="mb-2 block text-sm font-medium text-gray-700">
+                            Column Name
+                          </label>
+
+                          <input
+                            type="text"
+                            [(ngModel)]="column.name"
+                            placeholder="e.g. nomineeName"
+                            class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm"
+                          />
+
+                        </div>
+
+
+                        <!-- COLUMN LABEL -->
+
+                        <div>
+
+                          <label class="mb-2 block text-sm font-medium text-gray-700">
+                            Column Label
+                          </label>
+
+                          <input
+                            type="text"
+                            [(ngModel)]="column.label"
+                            placeholder="e.g. Nominee Name"
+                            class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm"
+                          />
+
+                        </div>
+
+
+                        <!-- COLUMN TYPE -->
+
+                        <div>
+
+                          <label class="mb-2 block text-sm font-medium text-gray-700">
+                            Field Type
+                          </label>
+
+                          <select
+                            [(ngModel)]="column.type"
+                            class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm"
+                          >
+
+                            <option value="text">Text</option>
+                            <option value="number">Number</option>
+                            <option value="email">Email</option>
+                            <option value="password">Password</option>
+                            <option value="textarea">Textarea</option>
+                            <option value="select">Select</option>
+                            <option value="radio">Radio</option>
+                            <option value="checkbox">Checkbox</option>
+                            <option value="date">Date</option>
+                            <option value="file">File</option>
+
+                          </select>
+
+                        </div>
+
+
+                        <!-- COLUMN PLACEHOLDER -->
+
+                        @if (
+                          column.type === 'text' ||
+                          column.type === 'number' ||
+                          column.type === 'email' ||
+                          column.type === 'password' ||
+                          column.type === 'textarea'
+                        ) {
+
+                          <div>
+
+                            <label class="mb-2 block text-sm font-medium text-gray-700">
+                              Placeholder
+                            </label>
+
+                            <input
+                              type="text"
+                              [(ngModel)]="column.placeholder"
+                              placeholder="Enter placeholder"
+                              class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm"
+                            />
+
+                          </div>
+
+                        }
+
+
+                        <!-- DEFAULT -->
+
+                        @if (
+                          column.type !== 'file' &&
+                          column.type !== 'checkbox'
+                        ) {
+
+                          <div>
+
+                            <label class="mb-2 block text-sm font-medium text-gray-700">
+                              Default Value
+                            </label>
+
+                            <input
+                              type="text"
+                              [(ngModel)]="column.defaultValue"
+                              placeholder="Optional default value"
+                              class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm"
+                            />
+
+                          </div>
+
+                        }
+
+
+                        <!-- DATE FORMAT -->
+
+                        @if (column.type === 'date') {
+
+                          <div>
+
+                            <label class="mb-2 block text-sm font-medium text-gray-700">
+                              Date Format
+                            </label>
+
+                            <select
+                              [(ngModel)]="column.dateFormat"
+                              class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm"
+                            >
+
+                              <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                              <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                              <option value="YYYY/MM/DD">YYYY/MM/DD</option>
+                              <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                              <option value="DD-MM-YYYY">DD-MM-YYYY</option>
+                              <option value="MM-DD-YYYY">MM-DD-YYYY</option>
+
+                            </select>
+
+                          </div>
+
+                        }
+
+                      </div>
+
+
+                      <!-- COLUMN BEHAVIOR -->
+
+                      <div class="mt-5 rounded-lg bg-gray-50 p-4">
+
+                        <h5 class="mb-4 text-sm font-semibold text-gray-800">
+                          Column Behavior
+                        </h5>
+
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+
+                          <!-- REQUIRED -->
+
+                          <div>
+
+                            <label class="mb-2 block text-sm font-medium text-gray-700">
+                              Required
+                            </label>
+
+                            <div class="flex gap-4">
+
+                              <label class="flex items-center gap-2 text-sm">
+
+                                <input
+                                  type="radio"
+                                  [name]="'column-required-' + i + '-' + columnIndex"
+                                  [value]="true"
+                                  [(ngModel)]="column.validation.required"
+                                />
+
+                                Yes
+
+                              </label>
+
+                              <label class="flex items-center gap-2 text-sm">
+
+                                <input
+                                  type="radio"
+                                  [name]="'column-required-' + i + '-' + columnIndex"
+                                  [value]="false"
+                                  [(ngModel)]="column.validation.required"
+                                />
+
+                                No
+
+                              </label>
+
+                            </div>
+
+                          </div>
+
+
+                          <!-- HIDDEN -->
+
+                          <div>
+
+                            <label class="mb-2 block text-sm font-medium text-gray-700">
+                              Hidden
+                            </label>
+
+                            <div class="flex gap-4">
+
+                              <label class="flex items-center gap-2 text-sm">
+
+                                <input
+                                  type="radio"
+                                  [name]="'column-hidden-' + i + '-' + columnIndex"
+                                  [value]="true"
+                                  [(ngModel)]="column.hidden"
+                                />
+
+                                Yes
+
+                              </label>
+
+                              <label class="flex items-center gap-2 text-sm">
+
+                                <input
+                                  type="radio"
+                                  [name]="'column-hidden-' + i + '-' + columnIndex"
+                                  [value]="false"
+                                  [(ngModel)]="column.hidden"
+                                />
+
+                                No
+
+                              </label>
+
+                            </div>
+
+                          </div>
+
+
+                          <!-- READ ONLY -->
+
+                          <div>
+
+                            <label class="mb-2 block text-sm font-medium text-gray-700">
+                              Read Only
+                            </label>
+
+                            <div class="flex gap-4">
+
+                              <label class="flex items-center gap-2 text-sm">
+
+                                <input
+                                  type="radio"
+                                  [name]="'column-readonly-' + i + '-' + columnIndex"
+                                  [value]="true"
+                                  [(ngModel)]="column.readOnly"
+                                />
+
+                                Yes
+
+                              </label>
+
+                              <label class="flex items-center gap-2 text-sm">
+
+                                <input
+                                  type="radio"
+                                  [name]="'column-readonly-' + i + '-' + columnIndex"
+                                  [value]="false"
+                                  [(ngModel)]="column.readOnly"
+                                />
+
+                                No
+
+                              </label>
+
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+
+                      <!-- COLUMN TEXT VALIDATION -->
+
+                      @if (
+                        column.type === 'text' ||
+                        column.type === 'password' ||
+                        column.type === 'textarea'
+                      ) {
+
+                        <div class="mt-5 rounded-lg bg-gray-50 p-4">
+
+                          <h5 class="mb-4 text-sm font-semibold text-gray-800">
+                            Text Validation
+                          </h5>
+
+                          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+
+                            <div>
+
+                              <label class="mb-2 block text-sm font-medium text-gray-700">
+                                Minimum Length
+                              </label>
+
+                              <input
+                                type="number"
+                                min="0"
+                                [(ngModel)]="column.validation.minLength"
+                                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm"
+                              />
+
+                            </div>
+
+                            <div>
+
+                              <label class="mb-2 block text-sm font-medium text-gray-700">
+                                Maximum Length
+                              </label>
+
+                              <input
+                                type="number"
+                                min="0"
+                                [(ngModel)]="column.validation.maxLength"
+                                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm"
+                              />
+
+                            </div>
+
+                          </div>
+
+                          <div class="mt-4">
+
+                            <label class="mb-2 block text-sm font-medium text-gray-700">
+                              Pattern
+                            </label>
+
+                            <select
+                              [(ngModel)]="column.validation.pattern"
+                              class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm"
+                            >
+
+                              <option value="">Any</option>
+                              <option value="TEXT_ONLY">Text Only</option>
+                              <option value="NUMBER_ONLY">Number Only</option>
+                              <option value="ALPHANUMERIC">Alphanumeric</option>
+
+                              <option value="ALPHANUMERIC_SPECIAL">
+                                Alphanumeric + Special Characters
+                              </option>
+
+                              <option value="ALL">
+                                All Characters
+                              </option>
+
+                            </select>
+
+                          </div>
+
+                        </div>
+
+                      }
+
+
+                      <!-- COLUMN NUMBER VALIDATION -->
+
+                      @if (column.type === 'number') {
+
+                        <div class="mt-5 rounded-lg bg-gray-50 p-4">
+
+                          <h5 class="mb-4 text-sm font-semibold text-gray-800">
+                            Number Validation
+                          </h5>
+
+                          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+
+                            <div>
+
+                              <label class="mb-2 block text-sm font-medium text-gray-700">
+                                Minimum Value
+                              </label>
+
+                              <input
+                                type="number"
+                                [(ngModel)]="column.validation.min"
+                                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm"
+                              />
+
+                            </div>
+
+                            <div>
+
+                              <label class="mb-2 block text-sm font-medium text-gray-700">
+                                Maximum Value
+                              </label>
+
+                              <input
+                                type="number"
+                                [(ngModel)]="column.validation.max"
+                                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm"
+                              />
+
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                      }
+
+
+                      <!-- COLUMN OPTIONS -->
+
+                      @if (
+                        column.type === 'select' ||
+                        column.type === 'radio'
+                      ) {
+
+                        <div class="mt-5 rounded-lg bg-gray-50 p-4">
+
+                          <h5 class="mb-4 text-sm font-semibold text-gray-800">
+                            Options
+                          </h5>
+
+                          @for (
+                            option of column.options;
+                            track $index;
+                            let optionIndex = $index
+                          ) {
+
+                            <div class="mb-3 flex gap-3">
+
+                              <input
+                                type="text"
+                                [(ngModel)]="option.label"
+                                placeholder="Label"
+                                class="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm"
+                              />
+
+                              <input
+                                type="text"
+                                [(ngModel)]="option.value"
+                                placeholder="Value"
+                                class="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm"
+                              />
+
+                              <button
+                                type="button"
+                                (click)="removeTableColumnOption(column, optionIndex)"
+                                class="rounded-lg px-3 text-red-600 hover:bg-red-50"
+                              >
+                                <i class="fa-solid fa-trash"></i>
+                              </button>
+
+                            </div>
+
+                          }
+
+                          <button
+                            type="button"
+                            (click)="addTableColumnOption(column)"
+                            class="mt-2 text-sm font-medium text-blue-600"
+                          >
+                            + Add Option
+                          </button>
+
+                        </div>
+
+                      }
+
+                    </div>
+
+                  }
+
+                </div>
+
+
+                <!-- ADD COLUMN -->
+
+                <button
+                  type="button"
+                  (click)="addTableColumn(field)"
+                  class="mt-5 rounded-lg border border-blue-600 px-4 py-2.5 text-sm font-medium text-blue-600 hover:bg-blue-50"
+                >
+                  + Add Column
+                </button>
+
+              </div>
+
+            }
+
+          </div>
+
+        }
+
+      </div>
+
+    </ng-template>
+
+
+    <!-- =====================================================
+         ADD SECTION / FIELD / TABLE
+         ===================================================== -->
+
+    <div class="mt-6 flex flex-wrap justify-center gap-3">
 
       <button
         type="button"
         (click)="addField()"
-        class="rounded-lg bg-blue-600 px-6 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700"
+        class="rounded-lg bg-blue-600 px-6 py-3 text-sm font-medium text-white shadow-sm hover:bg-blue-700"
       >
         + Add Field
       </button>
@@ -1373,24 +1561,32 @@
       <button
         type="button"
         (click)="addTable()"
-        class="rounded-lg border border-blue-600 px-6 py-3 text-sm font-medium text-blue-600 shadow-sm transition hover:bg-blue-50"
+        class="rounded-lg border border-blue-600 px-6 py-3 text-sm font-medium text-blue-600 hover:bg-blue-50"
       >
         + Add Dynamic Table
+      </button>
+
+      <button
+        type="button"
+        (click)="addSection()"
+        class="rounded-lg border border-purple-600 px-6 py-3 text-sm font-medium text-purple-600 hover:bg-purple-50"
+      >
+        + Add Section
       </button>
 
     </div>
 
 
-    <!-- ===================================================== -->
-    <!-- BUILDER ACTIONS -->
-    <!-- ===================================================== -->
+    <!-- =====================================================
+         BUILDER ACTIONS
+         ===================================================== -->
 
     <div class="mt-8 flex items-center justify-end gap-3 border-t border-gray-200 pt-6">
 
       <button
         type="button"
         (click)="resetForm()"
-        class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+        class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
       >
         Reset
       </button>
@@ -1398,13 +1594,12 @@
       <button
         type="button"
         (click)="saveForm()"
-        class="rounded-lg bg-green-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-green-700"
+        class="rounded-lg bg-green-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-green-700"
       >
         Save Form
       </button>
 
     </div>
-
 
   </div>
 
