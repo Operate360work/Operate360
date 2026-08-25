@@ -1,4 +1,7 @@
-<div class="min-h-screen bg-gray-50 p-6">
+<div
+  class="min-h-screen bg-gray-50 p-6"
+  (keydown)="handleKeyboardNavigation($event)"
+>
 
   <div class="mx-auto max-w-6xl">
 
@@ -98,7 +101,7 @@
             id="formId"
             type="text"
             [(ngModel)]="form.id"
-            (blur)="onFormIdBlur()"
+            (keydown.enter)="onFormIdBlur()"
             placeholder="Enter form ID"
             class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           />
@@ -1585,7 +1588,7 @@
 
       <button
         type="button"
-        (click)="resetForm()"
+        (click)="requestReset()"
         class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
       >
         Reset
@@ -1604,3 +1607,8 @@
   </div>
 
 </div>
+<app-pop-up-dialog-box
+  [config]="popupConfig"
+  (confirmed)="confirmReset()"
+  (cancelled)="cancelReset()">
+</app-pop-up-dialog-box>

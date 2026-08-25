@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ApiServices } from '../../services/api-services/api-services';
+import { PopUpDialogBox, PopUpDialogConfig } from '../../reusable-components/pop-up-dialog-box/pop-up-dialog-box';
 
 /* =========================================================
    FIELD TYPES
@@ -161,12 +163,15 @@ interface FormConfig {
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    FormsModule
-  ],
+    FormsModule,
+    PopUpDialogBox
+],
   templateUrl: './form-builder-engine.html',
   styleUrl: './form-builder-engine.css'
 })
 export class FormBuilderEngine {
+
+  
 
   /* =======================================================
      FORM MODEL
@@ -219,6 +224,13 @@ export class FormBuilderEngine {
       label: 'Disabled'
     }
   ];
+
+  /* =======================================================
+     CONSTRUCTOR
+     ======================================================= */
+
+  constructor(private api: ApiServices) {}
+
 
   /* =======================================================
      DEFAULT VALIDATION
@@ -677,6 +689,320 @@ export class FormBuilderEngine {
     );
   }
 
+ /* =======================================================
+   KEYBOARD NAVIGATION
+   ======================================================= */
+
+handleKeyboardNavigation(
+  event: KeyboardEvent
+): void {
+
+  const target = event.target as HTMLElement;
+
+  const tagName = target.tagName.toLowerCase();
+
+  /*
+   * =====================================================
+   * TEXTAREA
+   * =====================================================
+   *
+   * Keep normal cursor/selection behavior.
+   */
+  if (tagName === 'textarea') {
+    return;
+  }
+
+  /*
+   * =====================================================
+   * NUMBER / RANGE INPUT
+   * =====================================================
+   *
+   * Keep their normal arrow-key behavior.
+   */
+  if (
+    tagName === 'input' &&
+    (
+      (target as HTMLInputElement).type === 'number' ||
+      (target as HTMLInputElement).type === 'range'
+    )
+  ) {
+
+    /*
+     * Left / Right can still move between controls.
+     */
+    if (
+      event.key !== 'ArrowLeft' &&
+      event.key !== 'ArrowRight'
+    ) {
+      return;
+    }
+  }
+
+  /*
+   * =====================================================
+   * ARROW NAVIGATION
+   * =====================================================
+   *
+   * Up / Left  -> previous control
+   * Down / Right -> next control
+   *
+   * NOTE:
+   * For SELECT:
+   *
+   * Up / Down -> native dropdown selection
+   * Left / Right -> move between controls
+   */
+  if (
+    event.key === 'ArrowUp' ||
+    event.key === 'ArrowDown' ||
+    event.key === 'ArrowLeft' ||
+    event.key === 'ArrowRight'
+  ) {
+
+    /*
+     * SELECT:
+     *
+     * Up / Down should continue to work normally
+     * for changing the selected option.
+     *
+     * Left / Right should navigate between controls.
+     */
+    if (
+      tagName === 'select' &&
+      (
+        event.key === 'ArrowUp' ||
+        event.key === 'ArrowDown'
+      )
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+
+    const focusableElements =
+      this.getFocusableElements();
+
+    const currentIndex =
+      focusableElements.indexOf(target);
+
+    if (currentIndex === -1) {
+      return;
+    }
+
+    let nextIndex: number;
+
+    /*
+     * ===================================================
+     * DOWN / RIGHT
+     * ===================================================
+     */
+    if (
+      event.key === 'ArrowDown' ||
+      event.key === 'ArrowRight'
+    ) {
+
+      nextIndex =
+        currentIndex + 1;
+
+      if (
+        nextIndex >=
+        focusableElements.length
+      ) {
+        nextIndex = 0;
+      }
+    }
+
+    /*
+     * ===================================================
+     * UP / LEFT
+     * ===================================================
+     */
+    else {
+
+      nextIndex =
+        currentIndex - 1;
+
+      if (nextIndex < 0) {
+        nextIndex =
+          focusableElements.length - 1;
+      }
+    }
+
+    focusableElements[
+      nextIndex
+    ].focus();
+
+    return;
+  }
+
+  /*
+   * =====================================================
+   * ENTER
+   * =====================================================
+   */
+
+  if (event.key === 'Enter') {
+
+    /*
+     * FORM ID
+     *
+     * Keep existing HTML behavior:
+     *
+     * (keydown.enter)="onFormIdBlur()"
+     */
+    if (
+      target.id === 'formId'
+    ) {
+      return;
+    }
+
+    /*
+     * BUTTON
+     *
+     * Activate the button.
+     */
+    if (
+      tagName === 'button'
+    ) {
+
+      event.preventDefault();
+
+      (
+        target as HTMLButtonElement
+      ).click();
+
+      return;
+    }
+
+    /*
+     * RADIO BUTTON
+     *
+     * Enter selects the radio button.
+     */
+    if (
+      tagName === 'input' &&
+      (target as HTMLInputElement).type === 'radio'
+    ) {
+
+      event.preventDefault();
+
+      (
+        target as HTMLInputElement
+      ).click();
+
+      return;
+    }
+
+    /*
+     * CHECKBOX
+     *
+     * Enter toggles the checkbox.
+     */
+    if (
+      tagName === 'input' &&
+      (target as HTMLInputElement).type === 'checkbox'
+    ) {
+
+      event.preventDefault();
+
+      (
+        target as HTMLInputElement
+      ).click();
+
+      return;
+    }
+
+    /*
+     * SELECT
+     *
+     * The browser already handles the selected
+     * option, so we don't interfere.
+     */
+    if (
+      tagName === 'select'
+    ) {
+      return;
+    }
+  }
+}
+
+/* =======================================================
+   GET FOCUSABLE ELEMENTS
+   ======================================================= */
+
+private getFocusableElements(): HTMLElement[] {
+
+  const elements = Array.from(
+    document.querySelectorAll<HTMLElement>(
+      'input:not([disabled]), ' +
+      'select:not([disabled]), ' +
+      'textarea:not([disabled]), ' +
+      'button:not([disabled])'
+    )
+  );
+
+  return elements.filter(element => {
+
+    const input =
+      element as HTMLInputElement;
+
+    /*
+     * Ignore hidden inputs.
+     */
+    if (
+      input.type === 'hidden'
+    ) {
+      return false;
+    }
+
+    /*
+     * Ignore elements that aren't visible.
+     */
+    if (
+      element.offsetParent === null
+    ) {
+      return false;
+    }
+
+    return true;
+  });
+}
+
+  /* =======================================================
+     POP UP DIALOG CONFIG
+     ======================================================= */
+ popupConfig: PopUpDialogConfig = {
+  visible: false,
+  title: 'Reset Form?',
+  message:
+    'All the data you have entered will be lost. Are you sure you want to reset the form?',
+  confirmText: 'Yes, Reset',
+  cancelText: 'Keep Editing'
+};
+
+requestReset(): void {
+  this.popupConfig = {
+    ...this.popupConfig,
+    visible: true
+  };
+}
+
+confirmReset(): void {
+  this.popupConfig = {
+    ...this.popupConfig,
+    visible: false
+  };
+
+  this.resetForm();
+}
+
+cancelReset(): void {
+  this.popupConfig = {
+    ...this.popupConfig,
+    visible: false
+  };
+}
+
   /* =======================================================
      RESET FORM BUILDER
      ======================================================= */
@@ -702,6 +1028,21 @@ export class FormBuilderEngine {
       'Form configuration saved:',
       this.form
     );
+
+    this.api.post('/forms', this.form).subscribe({
+      next: (response) => {
+        console.log(
+          'Form submitted successfully:',
+          response
+        );
+      },
+      error: (error) => {
+        console.error(
+          'Form submission failed:',
+          error
+        );
+      }
+    });
 
     console.log(
       'Form JSON:',
