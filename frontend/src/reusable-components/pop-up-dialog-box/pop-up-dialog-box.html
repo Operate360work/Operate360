@@ -1,0 +1,76 @@
+@if (config?.visible) {
+
+  <!-- Backdrop -->
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4"
+  >
+
+    <!-- Dialog -->
+    <div
+      class="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl"
+    >
+
+      <!-- Header -->
+      <div
+        class="flex items-center justify-between border-b border-gray-200 px-6 py-4"
+      >
+
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900">
+            {{ config.title }}
+          </h2>
+        </div>
+
+        <!-- Close -->
+        <button
+          type="button"
+          (click)="onCancel()"
+          class="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-700"
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+
+      </div>
+
+
+      <!-- Message -->
+      <div class="px-6 py-6">
+
+        <p class="text-sm leading-6 text-gray-600">
+          {{ config.message }}
+        </p>
+
+      </div>
+
+
+      <!-- Actions -->
+      <div
+        class="flex justify-end gap-3 border-t border-gray-200 bg-gray-50 px-6 py-4"
+      >
+
+        <!-- Cancel -->
+        <button
+          type="button"
+          (click)="onCancel()"
+          class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+        >
+          {{ config.cancelText }}
+        </button>
+
+
+        <!-- Confirm -->
+        <button
+          type="button"
+          (click)="onConfirm()"
+          class="rounded-lg bg-red-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-red-700"
+        >
+          {{ config.confirmText }}
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}
