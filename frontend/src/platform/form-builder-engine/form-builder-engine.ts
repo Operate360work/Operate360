@@ -2,7 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApiServices } from '../../services/api-services/api-services';
-import { PopUpDialogBox, PopUpDialogConfig } from '../../reusable-components/pop-up-dialog-box/pop-up-dialog-box';
+import {
+  PopUpDialogBox,
+  PopUpDialogConfig
+} from '../../reusable-components/pop-up-dialog-box/pop-up-dialog-box';
 
 /* =========================================================
    FIELD TYPES
@@ -39,6 +42,7 @@ type BehaviorKey =
   | 'required'
   | 'hidden'
   | 'readOnly'
+  | 'is_primary_key'
   | 'disabled';
 
 /* =========================================================
@@ -95,6 +99,7 @@ interface FormField {
   hidden: boolean;
   readOnly: boolean;
   disabled: boolean;
+  is_primary_key: boolean;
 
   placeholder: string;
 
@@ -135,6 +140,42 @@ interface DynamicTableConfig {
 }
 
 /* =========================================================
+   DB TABLE ITEM TYPE
+   ========================================================= */
+
+type DbTableItemType =
+  | 'field'
+  | 'section';
+
+/* =========================================================
+   DB TABLE ITEM
+   ========================================================= */
+
+interface DbTableItem {
+  id: string;
+  type: DbTableItemType;
+
+  /*
+   * For field:
+   * stores the original field index.
+   *
+   * For section:
+   * stores the section id.
+   */
+  reference: string;
+}
+
+/* =========================================================
+   DB TABLE CONFIGURATION
+   ========================================================= */
+
+interface DbTableConfig {
+  id: string;
+  tableName: string;
+  items: DbTableItem[];
+}
+
+/* =========================================================
    FORM CONFIGURATION
    ========================================================= */
 
@@ -151,6 +192,11 @@ interface FormConfig {
    * Fields remain in one collection.
    */
   fields: FormField[];
+
+  /*
+   * Database table mappings.
+   */
+  dbTables: DbTableConfig[];
 }
 
 /* =========================================================
@@ -165,13 +211,11 @@ interface FormConfig {
     ReactiveFormsModule,
     FormsModule,
     PopUpDialogBox
-],
+  ],
   templateUrl: './form-builder-engine.html',
   styleUrl: './form-builder-engine.css'
 })
 export class FormBuilderEngine {
-
-  
 
   /* =======================================================
      FORM MODEL
@@ -181,7 +225,8 @@ export class FormBuilderEngine {
     id: '',
     name: '',
     sections: [],
-    fields: []
+    fields: [],
+    dbTables: []
   };
 
   /* =======================================================
@@ -222,6 +267,10 @@ export class FormBuilderEngine {
     {
       key: 'disabled',
       label: 'Disabled'
+    },
+    {
+      key: 'is_primary_key',
+      label: 'Primary Key'
     }
   ];
 
@@ -260,6 +309,7 @@ export class FormBuilderEngine {
       hidden: false,
       readOnly: false,
       disabled: false,
+      is_primary_key: false,
 
       placeholder: '',
       defaultValue: '',
@@ -330,6 +380,28 @@ export class FormBuilderEngine {
       }
     });
 
+    /*
+     * Remove any DB-table mappings that reference
+     * this section.
+     */
+    this.form.dbTables.forEach(dbTable => {
+      dbTable.items = dbTable.items.filter(
+        item =>
+          !(
+            item.type === 'section' &&
+            item.reference === section.id
+          )
+      );
+    });
+
+    /*
+     * Remove empty DB-table mappings.
+     */
+    this.form.dbTables =
+      this.form.dbTables.filter(
+        dbTable => dbTable.items.length > 0
+      );
+
     this.form.sections.splice(index, 1);
 
     if (this.form.sections.length === 0) {
@@ -383,7 +455,55 @@ export class FormBuilderEngine {
      ======================================================= */
 
   removeField(index: number): void {
+
+    /*
+     * Remove DB-table references to this field.
+     */
+    const fieldReference = String(index);
+
+    this.form.dbTables.forEach(dbTable => {
+      dbTable.items = dbTable.items.filter(
+        item =>
+          !(
+            item.type === 'field' &&
+            item.reference === fieldReference
+          )
+      );
+    });
+
+    /*
+     * Remove empty DB-table mappings.
+     */
+    this.form.dbTables =
+      this.form.dbTables.filter(
+        dbTable => dbTable.items.length > 0
+      );
+
     this.form.fields.splice(index, 1);
+
+    /*
+     * Because field references use array indexes,
+     * update references after deletion.
+     */
+    this.form.dbTables.forEach(dbTable => {
+
+      dbTable.items.forEach(item => {
+
+        if (item.type !== 'field') {
+          return;
+        }
+
+        const currentIndex =
+          Number(item.reference);
+
+        if (currentIndex > index) {
+          item.reference =
+            String(currentIndex - 1);
+        }
+
+      });
+
+    });
 
     if (this.form.fields.length === 0) {
       this.openFieldIndex = null;
@@ -479,6 +599,7 @@ export class FormBuilderEngine {
       hidden: false,
       readOnly: false,
       disabled: false,
+      is_primary_key: false,
 
       placeholder: '',
       defaultValue: null,
@@ -524,6 +645,7 @@ export class FormBuilderEngine {
       hidden: false,
       readOnly: false,
       disabled: false,
+      is_primary_key: false,
 
       placeholder: '',
       defaultValue: '',
@@ -608,6 +730,9 @@ export class FormBuilderEngine {
       case 'disabled':
         return field.disabled;
 
+      case 'is_primary_key':
+        return field.is_primary_key;
+
       default:
         return false;
     }
@@ -640,7 +765,290 @@ export class FormBuilderEngine {
       case 'disabled':
         field.disabled = value;
         break;
+
+      case 'is_primary_key':
+        field.is_primary_key = value;
+        break;
     }
+  }
+
+  /* =======================================================
+     ADD DB TABLE
+     ======================================================= */
+
+  addDbTable(): void {
+
+    const dbTable: DbTableConfig = {
+      id: this.generateId('dbtable'),
+      tableName: '',
+      items: []
+    };
+
+    this.form.dbTables.push(dbTable);
+  }
+
+  /* =======================================================
+     REMOVE DB TABLE
+     ======================================================= */
+
+  removeDbTable(index: number): void {
+
+    if (
+      index < 0 ||
+      index >= this.form.dbTables.length
+    ) {
+      return;
+    }
+
+    this.form.dbTables.splice(index, 1);
+  }
+
+  /* =======================================================
+     GET AVAILABLE GENERAL FIELDS
+     ======================================================= */
+
+  getAvailableDbTableFields(
+    currentDbTable: DbTableConfig
+  ): FormField[] {
+
+    return this.form.fields.filter(
+      field => {
+
+        /*
+         * Only normal fields without a section
+         * are available for DB-table assignment.
+         */
+        if (
+          field.type === 'table' ||
+          field.sectionId !== null
+        ) {
+          return false;
+        }
+
+        const fieldIndex =
+          this.getFieldIndex(field);
+
+        return !this.isFieldAssignedToAnotherDbTable(
+          fieldIndex,
+          currentDbTable
+        );
+      }
+    );
+  }
+
+  /* =======================================================
+     GET AVAILABLE SECTIONS
+     ======================================================= */
+
+  getAvailableDbTableSections(
+    currentDbTable: DbTableConfig
+  ): FormSection[] {
+
+    return this.form.sections.filter(
+      section =>
+        !this.isSectionAssignedToAnotherDbTable(
+          section.id,
+          currentDbTable
+        )
+    );
+  }
+
+  /* =======================================================
+     CHECK FIELD ASSIGNMENT
+     ======================================================= */
+
+  private isFieldAssignedToAnotherDbTable(
+    fieldIndex: number,
+    currentDbTable: DbTableConfig
+  ): boolean {
+
+    return this.form.dbTables.some(
+      dbTable => {
+
+        /*
+         * Ignore the current DB table because
+         * its own selected items should not disappear
+         * from its own list.
+         */
+        if (
+          dbTable.id === currentDbTable.id
+        ) {
+          return false;
+        }
+
+        return dbTable.items.some(
+          item =>
+            item.type === 'field' &&
+            item.reference === String(fieldIndex)
+        );
+      }
+    );
+  }
+
+  /* =======================================================
+     CHECK SECTION ASSIGNMENT
+     ======================================================= */
+
+  private isSectionAssignedToAnotherDbTable(
+    sectionId: string,
+    currentDbTable: DbTableConfig
+  ): boolean {
+
+    return this.form.dbTables.some(
+      dbTable => {
+
+        if (
+          dbTable.id === currentDbTable.id
+        ) {
+          return false;
+        }
+
+        return dbTable.items.some(
+          item =>
+            item.type === 'section' &&
+            item.reference === sectionId
+        );
+      }
+    );
+  }
+
+  /* =======================================================
+     GET DB TABLE CURRENT SELECTION
+     ======================================================= */
+
+  getDbTableSelectionValue(
+    dbTable: DbTableConfig
+  ): string {
+
+    /*
+     * V1 allows one selection at a time
+     * from the dropdown.
+     *
+     * Multiple items can still be assigned
+     * to the same DB table.
+     *
+     * The dropdown itself resets after selection.
+     */
+    return '';
+  }
+
+  /* =======================================================
+     SET DB TABLE SELECTION
+     ======================================================= */
+
+  setDbTableSelection(
+    dbTable: DbTableConfig,
+    value: string
+  ): void {
+
+    if (!value) {
+      return;
+    }
+
+    const separatorIndex =
+      value.indexOf(':');
+
+    if (separatorIndex === -1) {
+      return;
+    }
+
+    const type =
+      value.substring(
+        0,
+        separatorIndex
+      ) as DbTableItemType;
+
+    const reference =
+      value.substring(
+        separatorIndex + 1
+      );
+
+    if (!reference) {
+      return;
+    }
+
+    /*
+     * Prevent duplicate assignment inside
+     * the same DB table.
+     */
+    const alreadyExists =
+      dbTable.items.some(
+        item =>
+          item.type === type &&
+          item.reference === reference
+      );
+
+    if (alreadyExists) {
+      return;
+    }
+
+    /*
+     * Add the selected item.
+     */
+    dbTable.items.push({
+      id: this.generateId('dbitem'),
+      type,
+      reference
+    });
+  }
+
+  /* =======================================================
+     REMOVE DB TABLE ITEM
+     ======================================================= */
+
+  removeDbTableItem(
+    dbTable: DbTableConfig,
+    itemId: string
+  ): void {
+
+    dbTable.items =
+      dbTable.items.filter(
+        item => item.id !== itemId
+      );
+  }
+
+  /* =======================================================
+     GET DB TABLE ITEM DISPLAY NAME
+     ======================================================= */
+
+  getDbTableItemDisplayName(
+    item: DbTableItem
+  ): string {
+
+    if (item.type === 'field') {
+
+      const fieldIndex =
+        Number(item.reference);
+
+      const field =
+        this.form.fields[fieldIndex];
+
+      if (!field) {
+        return 'Unknown Field';
+      }
+
+      return (
+        field.label ||
+        field.name ||
+        'Untitled Field'
+      );
+    }
+
+    const section =
+      this.form.sections.find(
+        currentSection =>
+          currentSection.id === item.reference
+      );
+
+    if (!section) {
+      return 'Unknown Section';
+    }
+
+    return (
+      section.label ||
+      section.name ||
+      'Untitled Section'
+    );
   }
 
   /* =======================================================
@@ -689,330 +1097,306 @@ export class FormBuilderEngine {
     );
   }
 
- /* =======================================================
-   KEYBOARD NAVIGATION
-   ======================================================= */
+  /* =======================================================
+     KEYBOARD NAVIGATION
+     ======================================================= */
 
-handleKeyboardNavigation(
-  event: KeyboardEvent
-): void {
+  handleKeyboardNavigation(
+    event: KeyboardEvent
+  ): void {
 
-  const target = event.target as HTMLElement;
+    const target =
+      event.target as HTMLElement;
 
-  const tagName = target.tagName.toLowerCase();
-
-  /*
-   * =====================================================
-   * TEXTAREA
-   * =====================================================
-   *
-   * Keep normal cursor/selection behavior.
-   */
-  if (tagName === 'textarea') {
-    return;
-  }
-
-  /*
-   * =====================================================
-   * NUMBER / RANGE INPUT
-   * =====================================================
-   *
-   * Keep their normal arrow-key behavior.
-   */
-  if (
-    tagName === 'input' &&
-    (
-      (target as HTMLInputElement).type === 'number' ||
-      (target as HTMLInputElement).type === 'range'
-    )
-  ) {
+    const tagName =
+      target.tagName.toLowerCase();
 
     /*
-     * Left / Right can still move between controls.
+     * =====================================================
+     * TEXTAREA
+     * =====================================================
      */
-    if (
-      event.key !== 'ArrowLeft' &&
-      event.key !== 'ArrowRight'
-    ) {
+
+    if (tagName === 'textarea') {
       return;
     }
-  }
-
-  /*
-   * =====================================================
-   * ARROW NAVIGATION
-   * =====================================================
-   *
-   * Up / Left  -> previous control
-   * Down / Right -> next control
-   *
-   * NOTE:
-   * For SELECT:
-   *
-   * Up / Down -> native dropdown selection
-   * Left / Right -> move between controls
-   */
-  if (
-    event.key === 'ArrowUp' ||
-    event.key === 'ArrowDown' ||
-    event.key === 'ArrowLeft' ||
-    event.key === 'ArrowRight'
-  ) {
 
     /*
-     * SELECT:
-     *
-     * Up / Down should continue to work normally
-     * for changing the selected option.
-     *
-     * Left / Right should navigate between controls.
+     * =====================================================
+     * NUMBER / RANGE INPUT
+     * =====================================================
      */
+
     if (
-      tagName === 'select' &&
+      tagName === 'input' &&
       (
-        event.key === 'ArrowUp' ||
-        event.key === 'ArrowDown'
+        (target as HTMLInputElement).type === 'number' ||
+        (target as HTMLInputElement).type === 'range'
       )
     ) {
-      return;
+
+      if (
+        event.key !== 'ArrowLeft' &&
+        event.key !== 'ArrowRight'
+      ) {
+        return;
+      }
     }
-
-    event.preventDefault();
-
-    const focusableElements =
-      this.getFocusableElements();
-
-    const currentIndex =
-      focusableElements.indexOf(target);
-
-    if (currentIndex === -1) {
-      return;
-    }
-
-    let nextIndex: number;
 
     /*
-     * ===================================================
-     * DOWN / RIGHT
-     * ===================================================
+     * =====================================================
+     * ARROW NAVIGATION
+     * =====================================================
      */
+
     if (
+      event.key === 'ArrowUp' ||
       event.key === 'ArrowDown' ||
+      event.key === 'ArrowLeft' ||
       event.key === 'ArrowRight'
     ) {
 
-      nextIndex =
-        currentIndex + 1;
+      if (
+        tagName === 'select' &&
+        (
+          event.key === 'ArrowUp' ||
+          event.key === 'ArrowDown'
+        )
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+
+      const focusableElements =
+        this.getFocusableElements();
+
+      const currentIndex =
+        focusableElements.indexOf(target);
+
+      if (currentIndex === -1) {
+        return;
+      }
+
+      let nextIndex: number;
+
+      /*
+       * DOWN / RIGHT
+       */
 
       if (
-        nextIndex >=
-        focusableElements.length
+        event.key === 'ArrowDown' ||
+        event.key === 'ArrowRight'
       ) {
-        nextIndex = 0;
-      }
-    }
 
-    /*
-     * ===================================================
-     * UP / LEFT
-     * ===================================================
-     */
-    else {
-
-      nextIndex =
-        currentIndex - 1;
-
-      if (nextIndex < 0) {
         nextIndex =
-          focusableElements.length - 1;
+          currentIndex + 1;
+
+        if (
+          nextIndex >=
+          focusableElements.length
+        ) {
+          nextIndex = 0;
+        }
+      }
+
+      /*
+       * UP / LEFT
+       */
+
+      else {
+
+        nextIndex =
+          currentIndex - 1;
+
+        if (nextIndex < 0) {
+          nextIndex =
+            focusableElements.length - 1;
+        }
+      }
+
+      focusableElements[
+        nextIndex
+      ].focus();
+
+      return;
+    }
+
+    /*
+     * =====================================================
+     * ENTER
+     * =====================================================
+     */
+
+    if (event.key === 'Enter') {
+
+      /*
+       * FORM ID
+       */
+
+      if (
+        target.id === 'formId'
+      ) {
+        return;
+      }
+
+      /*
+       * BUTTON
+       */
+
+      if (
+        tagName === 'button'
+      ) {
+
+        event.preventDefault();
+
+        (
+          target as HTMLButtonElement
+        ).click();
+
+        return;
+      }
+
+      /*
+       * RADIO BUTTON
+       */
+
+      if (
+        tagName === 'input' &&
+        (target as HTMLInputElement).type === 'radio'
+      ) {
+
+        event.preventDefault();
+
+        (
+          target as HTMLInputElement
+        ).click();
+
+        return;
+      }
+
+      /*
+       * CHECKBOX
+       */
+
+      if (
+        tagName === 'input' &&
+        (target as HTMLInputElement).type === 'checkbox'
+      ) {
+
+        event.preventDefault();
+
+        (
+          target as HTMLInputElement
+        ).click();
+
+        return;
+      }
+
+      /*
+       * SELECT
+       */
+
+      if (
+        tagName === 'select'
+      ) {
+        return;
       }
     }
-
-    focusableElements[
-      nextIndex
-    ].focus();
-
-    return;
   }
 
-  /*
-   * =====================================================
-   * ENTER
-   * =====================================================
-   */
+  /* =======================================================
+     GET FOCUSABLE ELEMENTS
+     ======================================================= */
 
-  if (event.key === 'Enter') {
+  private getFocusableElements(): HTMLElement[] {
 
-    /*
-     * FORM ID
-     *
-     * Keep existing HTML behavior:
-     *
-     * (keydown.enter)="onFormIdBlur()"
-     */
-    if (
-      target.id === 'formId'
-    ) {
-      return;
-    }
+    const elements = Array.from(
+      document.querySelectorAll<HTMLElement>(
+        'input:not([disabled]), ' +
+        'select:not([disabled]), ' +
+        'textarea:not([disabled]), ' +
+        'button:not([disabled])'
+      )
+    );
 
-    /*
-     * BUTTON
-     *
-     * Activate the button.
-     */
-    if (
-      tagName === 'button'
-    ) {
+    return elements.filter(element => {
 
-      event.preventDefault();
+      const input =
+        element as HTMLInputElement;
 
-      (
-        target as HTMLButtonElement
-      ).click();
+      /*
+       * Ignore hidden inputs.
+       */
 
-      return;
-    }
+      if (
+        input.type === 'hidden'
+      ) {
+        return false;
+      }
 
-    /*
-     * RADIO BUTTON
-     *
-     * Enter selects the radio button.
-     */
-    if (
-      tagName === 'input' &&
-      (target as HTMLInputElement).type === 'radio'
-    ) {
+      /*
+       * Ignore invisible elements.
+       */
 
-      event.preventDefault();
+      if (
+        element.offsetParent === null
+      ) {
+        return false;
+      }
 
-      (
-        target as HTMLInputElement
-      ).click();
-
-      return;
-    }
-
-    /*
-     * CHECKBOX
-     *
-     * Enter toggles the checkbox.
-     */
-    if (
-      tagName === 'input' &&
-      (target as HTMLInputElement).type === 'checkbox'
-    ) {
-
-      event.preventDefault();
-
-      (
-        target as HTMLInputElement
-      ).click();
-
-      return;
-    }
-
-    /*
-     * SELECT
-     *
-     * The browser already handles the selected
-     * option, so we don't interfere.
-     */
-    if (
-      tagName === 'select'
-    ) {
-      return;
-    }
+      return true;
+    });
   }
-}
-
-/* =======================================================
-   GET FOCUSABLE ELEMENTS
-   ======================================================= */
-
-private getFocusableElements(): HTMLElement[] {
-
-  const elements = Array.from(
-    document.querySelectorAll<HTMLElement>(
-      'input:not([disabled]), ' +
-      'select:not([disabled]), ' +
-      'textarea:not([disabled]), ' +
-      'button:not([disabled])'
-    )
-  );
-
-  return elements.filter(element => {
-
-    const input =
-      element as HTMLInputElement;
-
-    /*
-     * Ignore hidden inputs.
-     */
-    if (
-      input.type === 'hidden'
-    ) {
-      return false;
-    }
-
-    /*
-     * Ignore elements that aren't visible.
-     */
-    if (
-      element.offsetParent === null
-    ) {
-      return false;
-    }
-
-    return true;
-  });
-}
 
   /* =======================================================
      POP UP DIALOG CONFIG
      ======================================================= */
- popupConfig: PopUpDialogConfig = {
-  visible: false,
-  title: 'Reset Form?',
-  message:
-    'All the data you have entered will be lost. Are you sure you want to reset the form?',
-  confirmText: 'Yes, Reset',
-  cancelText: 'Keep Editing'
-};
 
-requestReset(): void {
-  this.popupConfig = {
-    ...this.popupConfig,
-    visible: true
-  };
-}
-
-confirmReset(): void {
-  this.popupConfig = {
-    ...this.popupConfig,
-    visible: false
+  popupConfig: PopUpDialogConfig = {
+    visible: false,
+    title: 'Reset Form?',
+    message:
+      'All the data you have entered will be lost. Are you sure you want to reset the form?',
+    confirmText: 'Yes, Reset',
+    cancelText: 'Keep Editing'
   };
 
-  this.resetForm();
-}
+  requestReset(): void {
+    this.popupConfig = {
+      ...this.popupConfig,
+      visible: true
+    };
+  }
 
-cancelReset(): void {
-  this.popupConfig = {
-    ...this.popupConfig,
-    visible: false
-  };
-}
+  confirmReset(): void {
+    this.popupConfig = {
+      ...this.popupConfig,
+      visible: false
+    };
+
+    this.resetForm();
+  }
+
+  cancelReset(): void {
+    this.popupConfig = {
+      ...this.popupConfig,
+      visible: false
+    };
+  }
 
   /* =======================================================
      RESET FORM BUILDER
      ======================================================= */
 
   resetForm(): void {
+
     this.form = {
       id: '',
       name: '',
       sections: [],
-      fields: []
+      fields: [],
+      dbTables: []
     };
 
     this.openFieldIndex = null;
@@ -1024,25 +1408,26 @@ cancelReset(): void {
      ======================================================= */
 
   saveForm(): void {
+
     console.log(
       'Form configuration saved:',
       this.form
     );
 
-    this.api.post('/forms', this.form).subscribe({
-      next: (response) => {
-        console.log(
-          'Form submitted successfully:',
-          response
-        );
-      },
-      error: (error) => {
-        console.error(
-          'Form submission failed:',
-          error
-        );
-      }
-    });
+    // this.api.post('/forms', this.form).subscribe({
+    //   next: (response) => {
+    //     console.log(
+    //       'Form submitted successfully:',
+    //       response
+    //     );
+    //   },
+    //   error: (error) => {
+    //     console.error(
+    //       'Form submission failed:',
+    //       error
+    //     );
+    //   }
+    // });
 
     console.log(
       'Form JSON:',
